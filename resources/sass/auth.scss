@@ -1,0 +1,26 @@
+@import 'variables';
+
+$gray: #999999;
+$dark-gray: #333333;
+$blue: #0086e4;
+
+$primary-color: $primary;
+$border-color: #dddddd;
+
+// Font
+$primary-font: 'Lato', sans-serif;
+
+// Typography
+$body-font-family: $primary-font;
+$body-font-size: 14px;
+$body-color: $dark-gray;
+
+// Input
+$input-height: 40px;
+
+// Button
+$button-height: $input-height;
+
+.is-invalid {
+    border: 1px solid red !important;
+  }
