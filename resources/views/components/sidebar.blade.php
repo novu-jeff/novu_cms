@@ -4,8 +4,8 @@
     </div>
     <ul class="sidebar-list">
         <!-- Members -->
-        <li class="sidebar-item mt-1 {{ request()->is('reports*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+        <li class="sidebar-item mt-1 {{ request()->is('members*') ? 'active' : '' }}">
+            <a class="sidebar-link pe-5" href="{{ route('members.index') }}">
                 <i class="fa-solid fa-user-group"></i> Members
             </a>
         </li>
