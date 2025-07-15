@@ -231,6 +231,43 @@
             });
         });
 
+        // delete
+        $(document).on('click', '.delete-button', function () {
+            const id = $(this).data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will deactivate the standing member.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`/members/${id}`, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        toastr.success(response.data.message || 'Member deleted successfully.', 'Success', {
+                            iconClass: 'toast-success'
+                        });
+
+                        DataTable.ajax.reload(); // Reload DataTable
+                    })
+                    .catch(error => {
+                        toastr.error(
+                            error.response?.data?.message || 'Failed to delete standing member.',
+                            'Error',
+                            { iconClass: 'toast-error' }
+                        );
+                    });
+                }
+            });
+        });
+
     });
 </script>
 @endsection

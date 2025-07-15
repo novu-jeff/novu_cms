@@ -106,12 +106,17 @@ class MemberController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $data = Member::findOrFail($id);
+
+        $data->isActive = false;
+        $data->save();
+
+        return response([
+            'data' => $data,
+            'message' => 'Member deactivated successfully.'
+        ], 200);
     }
 
     public function datatable($query)

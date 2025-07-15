@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MemberController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,4 +15,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('/members', MemberController::class)->except('create', 'show');
+    Route::resource('/standing-committee', CommitteeController::class)->except('create', 'show');
 });

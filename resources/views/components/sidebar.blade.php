@@ -12,7 +12,7 @@
 
         <!-- Standing Committee -->
         <li class="sidebar-item mt-1 {{ request()->is('standing-committee*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+            <a class="sidebar-link pe-5" href="{{ route('standing-committee.index') }}">
                 <i class="fa-solid fa-people-line"></i> Standing Committee
             </a>
         </li>
