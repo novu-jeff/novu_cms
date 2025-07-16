@@ -39,8 +39,8 @@
         </li>
 
         <!-- Calendar Events -->
-        <li class="sidebar-item mt-1 {{ request()->is('calendar-events*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+        <li class="sidebar-item mt-1 {{ request()->is('calendar-event*') ? 'active' : '' }}">
+            <a class="sidebar-link pe-5" href="{{ route('calendar-event.index') }}">
                 <i class="fa-solid fa-calendar-days"></i> Calendar Events
             </a>
         </li>

@@ -126,16 +126,15 @@ aside {
 
     .sidebar-list {
         width: 100%;
-        padding: 0;
+        padding: 8px;
         margin: 0;
         list-style: none;
         display: flex;
         flex-direction: column;
         gap: 2px;
-
         .sidebar-item {
             transition: background-color ease 0.3s;
-            margin: 0px 12px 0px 12px;
+            margin: 0px 8px 0px 8px;
             position: relative;
             transition: all ease 0.3s;
             color: rgba($color: $dark, $alpha: 0.7);

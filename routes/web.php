@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AlbumPhotoController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrganizationController;
@@ -26,11 +27,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'update'])->name('photo.update');
     Route::post('/photo-journals/photos/store', [AlbumPhotoController::class, 'store'])->name('photo.store');
     Route::delete('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'destroy'])
-    ->name('photo.destroy');
+        ->name('photo.destroy');
     Route::resource('/organization', OrganizationController::class)->except('create', 'show');
-
     Route::get('api/photo-journals/photos/load/{id}', [AlbumPhotoController::class, 'loadImages'])
-    ->name('photo.load');
+        ->name('photo.load');
+    Route::resource('/calendar-event', CalendarEventController::class)->except('create', 'show');
+    
 
     Route::get('api/org-chart/members', [OrganizationController::class, 'loadNodes']);
 });
