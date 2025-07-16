@@ -1,5 +1,5 @@
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-md">
     <form method="POST" enctype="multipart/form-data" id="myForm">
       @csrf
       <div class="modal-content">
@@ -9,10 +9,27 @@
         </div>
 
         <div class="modal-body">
-          {{-- Committee Name --}}
+          {{-- Profile --}}
+          <label for="image_path" class="form-label">Image</label>
+          <div id="image_path_error" class="text-danger small pt-1 d-none"></div>
+          <div class="image-container mb-3">
+              <div class="mt-2 image_preview">
+                  <img id="image_preview" src="{{ asset('default/profile.png') }}" alt="Image Preview"/>
+              </div>
+              <div class="image_path position-relative text-center">
+                  <input type="file" id="image_path" name="image_path" accept="image/*" class="d-none">
+
+                  <label for="image_path" class="upload-label text-primary">
+                      <i class="fas fa-upload fa-2x"></i><br>
+                      <span>Click to Upload</span>
+                  </label>
+              </div>
+          </div>
+
+          {{-- Member Name --}}
           <div class="mb-3">
-            <label for="committee_name" class="form-label">Standing Committee Name</label>
-            <input type="text" class="form-control" id="committee_name" name="name" required>
+            <label for="member_name" class="form-label">Assignment Name</label>
+            <input type="text" class="form-control" id="member_name" name="name" required>
             <div id="name_error" class="text-danger small pt-1 d-none"></div>
           </div>
 

@@ -135,7 +135,7 @@ aside {
 
         .sidebar-item {
             transition: background-color ease 0.3s;
-            margin: 0px 16px 0px 16px;
+            margin: 0px 12px 0px 12px;
             position: relative;
             transition: all ease 0.3s;
             color: rgba($color: $dark, $alpha: 0.7);
@@ -163,24 +163,23 @@ aside {
                 bottom: 0;
                 left: 0;
                 right: 0;
-                padding: 12px 12px 12px 35px;
+                padding: 10px 10px 10px 24px;
                 text-decoration: none;
                 color: $dark;
-            }
-
-            .sidebar-link.active {
-                border-left: 5px solid $primary;
-                padding: 12px 12px 12px 30px;
-                background-color: rgba($color: $primary, $alpha: .1);
-                a {
-                    color: $dark !important;
+                border-radius: 12px;
+                &:hover {
+                    background-color: rgba($color: $primary, $alpha: 0.2) !important; 
+                     color: $dark !important;
+                    a {
+                        color: rgba($color: $dark, $alpha: .6) !important;
+                    }
                 }
             }
 
             &.active {
-                // background-color: rgba($color: $secondary, $alpha: 1);
                 a {
-                    color: $secondary !important;
+                    background-color: $primary !important; 
+                    color: $light !important;
                     i {
                         margin-left: -5px;
                     }

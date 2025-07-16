@@ -18,8 +18,8 @@
         </li>
 
         <!-- District Assignment -->
-        <li class="sidebar-item mt-1 {{ request()->is('district-assignment*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+        <li class="sidebar-item mt-1 {{ request()->is('district-assignments*') ? 'active' : '' }}">
+            <a class="sidebar-link pe-5" href="{{ route('district-assignments.index') }}">
                 <i class="fa-solid fa-map-location-dot"></i> District Assignment
             </a>
         </li>
