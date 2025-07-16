@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\AlbumPhotoController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MemberController;
@@ -18,4 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/members', MemberController::class)->except('create', 'show');
     Route::resource('/standing-committee', CommitteeController::class)->except('create', 'show');
     Route::resource('/district-assignments', AssignmentController::class)->except('create', 'show');
+    Route::resource('/photo-journals', AlbumController::class);
+    Route::get('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'index'])->name('photo.index');
+    Route::put('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'update'])->name('photo.update');
 });

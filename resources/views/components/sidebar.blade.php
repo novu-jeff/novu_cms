@@ -25,8 +25,8 @@
         </li>
 
         <!-- Photo Journal -->
-        <li class="sidebar-item mt-1 {{ request()->is('photo-journal*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+        <li class="sidebar-item mt-1 {{ request()->is('photo-journals*') ? 'active' : '' }}">
+            <a class="sidebar-link pe-5" href="{{ route('photo-journals.index') }}">
                 <i class="fa-solid fa-camera-retro"></i> Photo Journal
             </a>
         </li>
