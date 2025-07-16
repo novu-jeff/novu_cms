@@ -32,8 +32,8 @@
         </li>
 
         <!-- Organizational Chart -->
-        <li class="sidebar-item mt-1 {{ request()->is('organizational-chart*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+        <li class="sidebar-item mt-1 {{ request()->is('organization*') ? 'active' : '' }}">
+            <a href="{{ route('organization.index') }}" class="sidebar-link pe-5" href="#">
                 <i class="fa-solid fa-sitemap"></i> Organizational Chart
             </a>
         </li>

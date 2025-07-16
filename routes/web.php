@@ -5,6 +5,7 @@ use App\Http\Controllers\AlbumPhotoController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\OrganizationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,7 +27,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/photo-journals/photos/store', [AlbumPhotoController::class, 'store'])->name('photo.store');
     Route::delete('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'destroy'])
     ->name('photo.destroy');
+    Route::resource('/organization', OrganizationController::class)->except('create', 'show');
 
     Route::get('api/photo-journals/photos/load/{id}', [AlbumPhotoController::class, 'loadImages'])
     ->name('photo.load');
+
+    Route::get('api/org-chart/members', [OrganizationController::class, 'loadNodes']);
 });
