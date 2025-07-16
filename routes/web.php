@@ -17,7 +17,11 @@ Route::get('/', function () {
 // Auth::routes();
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('members.index') // if logged in
+        : redirect()->route('login');        // if not logged in
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('/members', MemberController::class)->except('create', 'show');
