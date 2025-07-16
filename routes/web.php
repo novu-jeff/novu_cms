@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AlbumPhotoController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\BarangayController;
 use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\CommitteeController;
 use App\Http\Controllers\MemberController;
@@ -32,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('api/photo-journals/photos/load/{id}', [AlbumPhotoController::class, 'loadImages'])
         ->name('photo.load');
     Route::resource('/calendar-event', CalendarEventController::class)->except('create', 'show');
+    Route::resource('/barangay-officials', BarangayController::class)->except('create', 'show');
     
 
     Route::get('api/org-chart/members', [OrganizationController::class, 'loadNodes']);

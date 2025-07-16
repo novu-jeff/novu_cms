@@ -47,7 +47,7 @@
 
         <!-- Barangay Officials -->
         <li class="sidebar-item mt-1 {{ request()->is('barangay-officials*') ? 'active' : '' }}">
-            <a class="sidebar-link pe-5" href="#">
+            <a class="sidebar-link pe-5" href="{{ route('barangay-officials.index') }}">
                 <i class="fa-solid fa-user-tie"></i> Barangay Officials
             </a>
         </li>
