@@ -286,61 +286,143 @@ aside {
   }
 }
 
+// .album-card {
+//     width: 100%;
+//     aspect-ratio: 8 / 8;
+//     overflow: hidden;
+//     border-radius: 1rem;
+//     position: relative;
+
+//     i {
+//         font-size: 2rem;
+//     }
+
+//     img {
+//         width: 100%;
+//         height: 100%;
+//         object-fit: cover;
+//         display: block;
+//     }
+
+//     .album-body {
+//         position: absolute;
+//         bottom: -80%;
+//         width: 100%;
+//         height: 100%;
+//         z-index: 3;
+//         background-color: rgba($color: $primary, $alpha: .8);
+//         color: $light;
+//         display: flex;
+//         flex-direction: column;
+//         align-items: center;
+//         transition: all ease .3s;
+//         .album-title, a {
+//             font-weight: 500;
+//             padding-top: 5%;
+//         }
+
+//         a {
+//             color: $light;
+//             display: none;
+//         }
+
+//         .buttons {
+//             display: flex;
+//             gap: 4px;
+//         }
+//     }
+
+//     &:hover {
+//         .album-body {
+//             bottom: 0;
+//             // cursor: pointer;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             .album-title, a {
+//                 padding-top: 0;
+//             }
+//             a {
+//                 display: block;
+//             }
+//         }
+//     }
+
+// }
+
 .album-card {
     width: 100%;
-    aspect-ratio: 8 / 8;
     overflow: hidden;
-    border-radius: 1rem;
     position: relative;
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
+    border: 1px solid rgba($color: $primary, $alpha: .3);
+    display: flex;
+    aspect-ratio: 8 / 8;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: .8rem;
+    transition: all ease 0.3s;
+    max-width: 220px;
+    .album-title {
+        padding: 8px;
+        text-align: center;
     }
-
-    .album-body {
+    .folder {
+        font-size: 120px;
+        transition: all ease 0.3s;
+        color: $primary;
+        position: relative;
+    }
+    .album-image {
         position: absolute;
-        bottom: -80%;
-        width: 100%;
-        height: 100%;
-        z-index: 3;
-        background-color: rgba($color: $primary, $alpha: .8);
-        color: $light;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transition: all ease .3s;
-        .album-title, a {
-            font-weight: 500;
-            padding-top: 5%;
-        }
-
-        a {
-            color: $light;
-            display: none;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 4px;
-        }
+        transition: all ease 0.3s;
+        bottom: 12%;
+        right: 10%;
+        height: 60px;
+        width: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid rgba($color: $primary, $alpha: 0.6);
     }
-
     &:hover {
-        .album-body {
-            bottom: 0;
-            // cursor: pointer;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            .album-title, a {
-                padding-top: 0;
-            }
-            a {
-                display: block;
+        border: 1px solid $primary;
+        .folder, .album-image {
+            transform: scale(1.1);
+        }   
+    }
+    .dropdown  {
+        position: absolute;
+        top: 6px;
+        right: 4px;
+
+        button {
+            border: none;
+            background-color: none;
+        }
+    }
+}
+
+.image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    a {
+        img {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: 150px; 
+            object-fit: cover; 
+            transition: all ease 0.3s;
+            &:hover {
+                transform: scale(1.1);
             }
         }
     }
-
+    button {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background-color: $light;
+    }
+    
 }

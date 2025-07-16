@@ -18,21 +18,26 @@
 
     <div class="row">
         @forelse($data as $album)
-            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 mb-4">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 mb-4 d-flex justify-content-center">
                 <div class="album-card">
-                    @if($album->image_path)
-                        <img src="{{ asset('storage/' . $album->image_path) }}" alt="Album Photo" class="album-image">
-                    @else
-                        <img src="{{ asset('default/profile.png') }}" alt="No Image" class="album-image">
-                    @endif
-                    asdasd
-                    <div class="album-body">
-                        <div class="album-title">{{ $album->name }}</div>
-                        <div class="buttons">
-                            <a href="{{ route('photo.index', $album->id) }}" class="album-button">Manage</a>
-                            <a type="button" data-id="{{ $album->id }}" class="album-button edit-button">Edit</a>
-                            <a type="button" data-id="{{ $album->id }}" class="album-button delete-button">Delete</a>
-                        </div>
+                    <div class="album-title">{{ $album->name }}</div>
+                    <a href="{{ route('photo.index', $album->id) }}">
+                        <i class="folder fa-solid fa-folder-open"></i>
+                        @if($album->image_path)
+                            <img src="{{ asset('storage/' . $album->image_path) }}" alt="Album Photo" class="album-image">
+                        @else
+                            <img src="{{ asset('default/no-image.png') }}" alt="No Image" class="album-image">
+                        @endif
+                    </a>
+
+                    <div class="dropdown text-end">
+                        <button type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item edit-button" data-id="{{ $album->id }}">Edit</a></li>
+                            <li><a class="dropdown-item delete-button" data-id="{{ $album->id }}">Delete</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -52,6 +57,7 @@
 @endsection
 
 @section('scripts')
+
 <script>
     $(document).ready(function () {
        

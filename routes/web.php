@@ -23,4 +23,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/photo-journals', AlbumController::class);
     Route::get('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'index'])->name('photo.index');
     Route::put('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'update'])->name('photo.update');
+    Route::post('/photo-journals/photos/store', [AlbumPhotoController::class, 'store'])->name('photo.store');
+    Route::delete('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'destroy'])
+    ->name('photo.destroy');
+
+    Route::get('api/photo-journals/photos/load/{id}', [AlbumPhotoController::class, 'loadImages'])
+    ->name('photo.load');
 });

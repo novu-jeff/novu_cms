@@ -22,6 +22,11 @@
     <!-- ✅ DataTables 1.13.6 Bootstrap 5 CSS (compatible with jQuery and Bootstrap 5) -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.css"
+        />
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @yield('styles')
@@ -57,10 +62,14 @@
 
     <!-- Bootstrap Bundle JS (only include once) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- ✅ DataTables 1.13.6 core + Bootstrap 5 integration (compatible with jQuery) -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.0/dist/fancybox/fancybox.umd.js"></script>
 
     @yield('scripts')
 </body>

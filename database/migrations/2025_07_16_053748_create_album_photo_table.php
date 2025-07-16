@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('album_id')->constrained('albums');
             $table->string('image_path')->nullable();
+            $table->boolean('isActive')->default(true);
             $table->timestamps();
         });
     }

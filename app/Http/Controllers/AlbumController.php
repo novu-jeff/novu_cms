@@ -30,7 +30,7 @@ class AlbumController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|unique:albums,name'
+            'name' => 'required|string|max:30|unique:albums,name',
         ]);
 
         DB::beginTransaction();
@@ -82,7 +82,7 @@ class AlbumController extends Controller
     public function update(Request $request, string $id)
     {
          $validatedData = $request->validate([
-            'name' => 'required|string|unique:albums,name,' . $id,
+            'name' => 'required|string|max:30|unique:albums,name,' . $id,
         ]);
 
         DB::beginTransaction();
