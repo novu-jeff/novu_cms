@@ -68,7 +68,7 @@
             $('.update-button').hide();
             $('.update-section').hide();
             $('.submit-button').show();
-            $('.modal-title').html('Add New Member');
+            $('.modal-title').html('Add New Album');
             $('#myForm')[0].reset();
 
             $('.text-danger').addClass('d-none');

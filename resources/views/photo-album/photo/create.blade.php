@@ -1,6 +1,6 @@
 <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form method="POST" enctype="multipart/form-data" id="myForm">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" enctype="multipart/form-data" id="myForm" class="w-100">
       @csrf
       <div class="modal-content">
         <div class="modal-header">
@@ -22,10 +22,10 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 <i class="fas fa-times"></i> Cancel
             </button>
-            <button type="submit" class="btn btn-primary submit-button">
+             <button type="submit" class="btn btn-primary submit-button">
                 <i class="fas fa-upload"></i> Upload
             </button>
         </div>

@@ -66,7 +66,7 @@
             $('.update-button').hide();
             $('.update-section').hide();
             $('.submit-button').show();
-            $('.modal-title').html('Add New Member');
+            $('.modal-title').html('Add New Node');
             $('#myForm')[0].reset();
 
             $('.text-danger').addClass('d-none');
@@ -154,7 +154,7 @@
             id = $(this).data('id');   // grab the row id
 
             // Modal header & buttons
-            $('.modal-title').text('Edit Member');
+            $('.modal-title').text('Edit Node');
             $('.update-button').show();
             $('.submit-button').hide();
 

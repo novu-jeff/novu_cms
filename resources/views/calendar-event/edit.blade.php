@@ -3,7 +3,7 @@
     <form method="POST" enctype="multipart/form-data" id="myForm" class="w-100">
       @csrf
       <div class="modal-content rounded-4 border-0 shadow-sm">
-        <div class="modal-header border-0 pb-2 pt-3 px-4">
+        <div class="modal-header mb-3 pb-2 pt-3 px-4">
           <h5 class="modal-title fw-semibold" id="myModalLabel">Add Event</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <div class="modal-footer border-0 px-4 pb-4 pt-2">
+        <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             <i class="fas fa-times"></i> Cancel
           </button>
