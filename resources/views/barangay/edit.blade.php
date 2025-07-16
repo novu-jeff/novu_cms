@@ -11,6 +11,7 @@
         <div class="modal-body">
           <!-- Image Upload -->
           <label for="image_path" class="form-label">Profile Picture</label>
+          <div id="image_path_error" class="text-danger small pt-1 d-none"></div>
           <div class="image-container mb-3">
             <div class="mt-2 image_preview">
               <img id="image_preview" src="{{ asset('default/profile.png') }}" alt="Image Preview"/>
