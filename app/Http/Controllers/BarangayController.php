@@ -20,6 +20,12 @@ class BarangayController extends Controller
         return view('barangay.index');
     }
 
+    public function loadData()
+    {
+        $data = Barangay::where('isActive', true)->get();
+        return response(['data' => $data, 'stauts' => 'success'], 200);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

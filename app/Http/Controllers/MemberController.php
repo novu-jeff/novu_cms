@@ -23,6 +23,12 @@ class MemberController extends Controller
         return view('member.index');
     }
 
+    public function loadData()
+    {
+        $data = Member::where('isActive', true)->get();
+        return response(['data' => $data, 'status' => 'success'], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

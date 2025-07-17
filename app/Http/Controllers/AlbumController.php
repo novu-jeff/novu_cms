@@ -27,6 +27,24 @@ class AlbumController extends Controller
         return view('photo-album.index', compact('data'));
     }
 
+    public function loadData()
+    {
+        $sub = DB::table('album_photo')
+            ->select('album_id', DB::raw('MIN(id) as photo_id'))
+            ->groupBy('album_id');
+
+        $data = DB::table('albums')
+            ->leftJoinSub($sub, 'ap', function ($join) {
+                $join->on('albums.id', '=', 'ap.album_id');
+            })
+            ->leftJoin('album_photo', 'album_photo.id', '=', 'ap.photo_id')
+            ->select('albums.*', 'album_photo.image_path')
+            ->where('albums.isActive', true)
+            ->paginate(20);
+
+        return response(['data' => $data, 'status', 'success']);
+    }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([

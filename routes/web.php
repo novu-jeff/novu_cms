@@ -42,3 +42,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('api/org-chart/members', [OrganizationController::class, 'loadNodes']);
 });
+
+Route::middleware('api')->prefix('api')->group(function () {
+    Route::get('/members', [MemberController::class, 'loadData']);
+    Route::get('/standing-committee', [CommitteeController::class, 'loadData']);
+    Route::get('/district-assignments', [AssignmentController::class, 'loadData']);
+    Route::get('/organization', [OrganizationController::class, 'loadData']);
+    Route::get('/photo-journals', [AlbumController::class, 'loadData']);
+    Route::get('/photo-journals/photos/{id}', [AlbumPhotoController::class, 'loadImages']);
+    Route::get('/calendar-event', [CalendarEventController::class, 'loadData']);
+    Route::get('/barangay-officials', [BarangayController::class, 'loadData']);
+
+});

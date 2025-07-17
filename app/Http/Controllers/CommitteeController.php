@@ -24,6 +24,11 @@ class CommitteeController extends Controller
         return view('committee.index');
     }
 
+    public function loadData()
+    {
+        $data = Committee::where('isActive', true)->get();
+        return response(['data' => $data, 'status' => 'success'], 200);
+    }
     /**
      * Store a newly created resource in storage.
      */

@@ -22,6 +22,12 @@ class AssignmentController extends Controller
         return view('assignments.index');
     }
 
+    public function loadData()
+    {
+        $data = Assignment::where('isActive', true)->get();
+        return response(['data' => $data, 'status' => 'success'], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

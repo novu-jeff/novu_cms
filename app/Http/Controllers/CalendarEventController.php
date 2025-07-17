@@ -21,6 +21,12 @@ class CalendarEventController extends Controller
         return view('calendar-event.index');
     }
 
+    public function loadData()
+    {
+        $data = CalendarEvent::where('isActive', true)->get();
+        return response(['data' => $data, 'status' => 'success'],200);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
