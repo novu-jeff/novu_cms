@@ -22,12 +22,13 @@ class AlbumPhotoController extends Controller
 
     public function loadImages(string $id)
     {
+        $parent = DB::table('albums')->where('id', $id)->first();
         $data = DB::table('album_photo')
             ->where('isActive', true)
             ->where('album_id', $id)
             ->get();
 
-        return response(['data' => $data, 'status' => 'success']);
+        return response(['data' => $data, 'parent' => $parent, 'status' => 'success']);
     }
 
     public function store(Request $request)

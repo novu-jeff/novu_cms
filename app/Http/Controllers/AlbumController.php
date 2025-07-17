@@ -42,7 +42,11 @@ class AlbumController extends Controller
             ->where('albums.isActive', true)
             ->paginate(20);
 
-        return response(['data' => $data, 'status', 'success']);
+        return response([
+            'status' => 'success',
+            'data' => $data
+        ]);
+
     }
 
     public function store(Request $request)
