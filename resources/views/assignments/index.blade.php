@@ -23,7 +23,6 @@
                 <table class="table table-hover table-striped align-middle mb-0" id="myTable">
                     <thead>
                         <tr>
-                            <th class="text-muted">Image</th>
                             <th class="text-muted">Name</th>
                             <th class="text-muted" style="width: 10%">Action</th>
                         </tr>
@@ -47,27 +46,10 @@
             ajax: {
                 url: '{{ route('district-assignments.index') }}',
             },
-            columns: [       
-                { data: "image", name: 'image' },       
+            columns: [           
                 { data: "name", name: 'name' },       
                 { data: "actions", name: 'actions' },         
             ],
-        });
-
-        // image on change
-        $('#image_path').on('change', function (e) {
-            const input = this;
-            const preview = $('#image_preview');
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    preview.attr('src', event.target.result).removeClass('d-none');
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.attr('src', '{{ asset('default/profile.png') }}').addClass('d-none');
-            }
         });
 
         $('#addMemberBtn').click(() => {
@@ -115,7 +97,7 @@
             $('.update-button').hide();
             $('.update-section').hide();
             $('.submit-button').show();
-            $('.modal-title').html('Add New Committee');
+            $('.modal-title').html('Add New Assignment');
             $('#myForm')[0].reset();
 
             $('.text-danger').addClass('d-none');
@@ -131,8 +113,6 @@
 
             const formData = new FormData();
 
-            // Get image
-            formData.append('image_path', document.getElementById('image_path').files[0]);
             // Committee name
             formData.append('name', $('#member_name').val());
 
@@ -160,7 +140,6 @@
                 $('#myForm')[0].reset();
                 $('#members-wrapper .member-entry').not(':first').remove();
                 $('#members-wrapper .member-entry:first input').val('');
-                $('#image_preview').attr('src', '{{ asset('default/profile.png') }}');
                 DataTable.ajax.reload();
 
                 toastr.success(response.data.message, 'Success', {
@@ -176,11 +155,9 @@
                 if (error.response && error.response.status === 422) {
                     const errors = error.response.data.errors;
 
-                    // Reset all existing error messages and styles
                     $('.text-danger').addClass('d-none').text('');
                     $('.form-control').removeClass('is-invalid');
-                    $('.field-error').remove(); // remove dynamically added messages
-                    $('#image_preview').removeClass('border border-danger');
+                    $('.field-error').remove();
 
                     Object.keys(errors).forEach(key => {
                         const messages = errors[key];
@@ -246,13 +223,6 @@
                     // Set name
                     $('#member_name').val(assignment.name);
 
-                    // Set image preview
-                    const imgUrl = assignment.image_path
-                        ? `/storage/${assignment.image_path}`
-                        : '{{ asset("default/profile.png") }}';
-
-                    $('#image_preview').attr('src', imgUrl).removeClass('d-none');
-
                     // Clear members wrapper
                     $('#members-wrapper').empty();
 
@@ -294,13 +264,7 @@
             $('.update-button').prop('disabled', true);
 
             const formData = new FormData();
-
-            // Append image if exists
-            const imageInput = document.getElementById('image_path');
-            if (imageInput.files.length > 0) {
-                formData.append('image_path', imageInput.files[0]);
-            }
-
+            
             // Append name
             formData.append('name', $('#member_name').val());
 
@@ -340,7 +304,6 @@
                 $('.text-danger').addClass('d-none');
                 $('.form-control').removeClass('is-invalid');
                 $('.field-error').remove();
-                $('#image_preview').removeClass('border border-danger');
 
                 if (error.response && error.response.status === 422) {
                     const errors = error.response.data.errors;
@@ -354,7 +317,6 @@
 
                         } else if (key === 'image_path') {
                             $('#image_path_error').removeClass('d-none').text(messages[0]);
-                            $('#image_preview').addClass('border border-danger');
 
                         } else if (key.startsWith('members.')) {
                             const match = key.match(/members\.(\d+)\.(\w+)/);

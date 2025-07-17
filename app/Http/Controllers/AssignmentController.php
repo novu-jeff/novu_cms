@@ -42,7 +42,7 @@ class AssignmentController extends Controller
 
             $assignmentId = DB::table('assignments')->insertGetId([
                 'name'       => $data['name'],
-                'image_path'       => $data['image_path'],
+                // 'image_path'       => $data['image_path'],
                 'isActive'   => true,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -136,7 +136,7 @@ class AssignmentController extends Controller
             // Update the main assignment record
             DB::table('assignments')->where('id', $id)->update([
                 'name'       => $data['name'],
-                'image_path' => $data['image_path'],
+                // 'image_path' => $data['image_path'],
                 'updated_at' => now(),
             ]);
 

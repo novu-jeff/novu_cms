@@ -34,8 +34,8 @@ class AlbumPhotoController extends Controller
     {
         $request->validate([
             'album_id' => 'required|exists:albums,id',
-            'images' => 'required', // Ensure the images array exists
-            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:5120', // Validate each file
+            'images' => 'required',
+            'images.*' => 'image|mimes:jpg,jpeg,png,gif|max:5120',
         ]);
 
         DB::beginTransaction();
@@ -43,7 +43,6 @@ class AlbumPhotoController extends Controller
         try {
             $uploadedImages = [];
 
-            // ✅ Check if files exist before foreach
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $path = $image->store('assignments', 'public');

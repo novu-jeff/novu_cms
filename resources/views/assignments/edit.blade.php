@@ -9,22 +9,6 @@
         </div>
 
         <div class="modal-body">
-          {{-- Profile --}}
-          <label for="image_path" class="form-label">Image</label>
-          <div id="image_path_error" class="text-danger small pt-1 d-none"></div>
-          <div class="image-container mb-3">
-              <div class="mt-2 image_preview">
-                  <img id="image_preview" src="{{ asset('default/profile.png') }}" alt="Image Preview"/>
-              </div>
-              <div class="image_path position-relative text-center">
-                  <input type="file" id="image_path" name="image_path" accept="image/*" class="d-none">
-
-                  <label for="image_path" class="upload-label text-primary">
-                      <i class="fas fa-upload fa-2x"></i><br>
-                      <span>Click to Upload</span>
-                  </label>
-              </div>
-          </div>
 
           {{-- Member Name --}}
           <div class="mb-3">

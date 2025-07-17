@@ -29,7 +29,7 @@ class StoreAssignmentRequest extends FormRequest
                 'max:255',
                 Rule::unique('assignments', 'name')->where('isActive', true),
             ],
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'members' => 'required|array|min:1',
             'members.*.name' => 'required|string|max:255',
             'members.*.position' => 'nullable|string|max:255',

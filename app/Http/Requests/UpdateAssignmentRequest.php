@@ -31,7 +31,7 @@ class UpdateAssignmentRequest extends FormRequest
                     ->ignore($this->route('standing_committee'))
                     ->where('isActive', true),
             ],
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'members' => 'required|array|min:1',
             'members.*.name' => 'required|string|max:255',
             'members.*.position' => 'nullable|string|max:255',
