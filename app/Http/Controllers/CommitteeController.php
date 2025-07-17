@@ -26,7 +26,38 @@ class CommitteeController extends Controller
 
     public function loadData()
     {
-        $data = Committee::where('isActive', true)->get();
+        // Get all active committees with their members
+        $data = DB::table('standing_comittee as sc')
+            ->where('sc.isActive', true)
+            ->leftJoin('standing_comittee_member as scm', 'sc.id', '=', 'scm.standing_comittee_id')
+            ->select(
+                'sc.id as committee_id',
+                'sc.name as committee_name',
+                'sc.isActive as committee_active',
+                'scm.id as member_id',
+                'scm.name as member_name',
+                'scm.position as member_position',
+                'scm.isActive as member_active'
+            )
+            ->get()
+            ->groupBy('committee_id')
+            ->map(function ($group) {
+                $committee = $group->first();
+                return [
+                    'id' => $committee->committee_id,
+                    'name' => $committee->committee_name,
+                    'isActive' => $committee->committee_active,
+                    'members' => $group->map(function ($member) {
+                        return [
+                            'id' => $member->member_id,
+                            'name' => $member->member_name,
+                            'position' => $member->member_position,
+                            'isActive' => $member->member_active,
+                        ];
+                    })->filter(fn ($m) => $m['id'] !== null)->values()
+                ];
+            })->values();
+
         return response(['data' => $data, 'status' => 'success'], 200);
     }
     /**

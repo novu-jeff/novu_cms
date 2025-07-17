@@ -24,8 +24,41 @@ class AssignmentController extends Controller
 
     public function loadData()
     {
-        $data = Assignment::where('isActive', true)->get();
-        return response(['data' => $data, 'status' => 'success'], 200);
+        $data = DB::table('assignments as a')
+            ->where('a.isActive', true)
+            ->leftJoin('assignment_member as am', 'a.id', '=', 'am.assignment_id')
+            ->select(
+                'a.id as assignment_id',
+                'a.name as assignment_name',
+                'a.image_path',
+                'a.isActive as assignment_active',
+                'am.id as member_id',
+                'am.name as member_name',
+                'am.position as member_position'
+            )
+            ->get()
+            ->groupBy('assignment_id')
+            ->map(function ($group) {
+                $assignment = $group->first();
+                return [
+                    'id' => $assignment->assignment_id,
+                    'name' => $assignment->assignment_name,
+                    'image_path' => $assignment->image_path,
+                    'isActive' => (bool)$assignment->assignment_active,
+                    'members' => $group->map(function ($member) {
+                        return [
+                            'id' => $member->member_id,
+                            'name' => $member->member_name,
+                            'position' => $member->member_position,
+                        ];
+                    })->filter(fn ($m) => $m['id'] !== null)->values()
+                ];
+            })->values();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
     }
 
     /**
