@@ -42,6 +42,9 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
         let DataTable = $('#myTable').DataTable({
             processing: true,
@@ -101,7 +104,7 @@
             const formElement = document.getElementById('myForm');
             const formData = new FormData(formElement);
 
-            axios.post('/organization', formData, {
+            axios.post(`${basePath}/organization`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -163,7 +166,7 @@
             $('.form-control').removeClass('is-invalid');
 
             // Get member data
-            axios.get(`/organization/${id}/edit`)
+            axios.get(`${basePath}/organization/${id}/edit`)
                 .then(response => {
                     const m = response.data.data;
 
@@ -196,7 +199,7 @@
             const formData = new FormData(formElement);
             formData.append('_method', 'PUT');
 
-            axios.post(`/organization/${id}`, formData, {
+            axios.post(`${basePath}/organization/${id}`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -250,7 +253,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/organization/${id}`, {
+                    axios.delete(`${basePath}/organization/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }
@@ -277,7 +280,7 @@
     });
 
     function loadParentDropdown(selectedId = null) {
-        axios.get('/api/org-chart/members')
+        axios.get(`${basePath}/api/org-chart/members`)
             .then(response => {
                 const members = response.data.data;
                 let selectHtml = `

@@ -42,6 +42,9 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
         let id;
         let DataTable = $('#myTable').DataTable({
@@ -79,7 +82,7 @@
             const formElement = document.getElementById('myForm');
             const formData = new FormData(formElement);
 
-            axios.post('/calendar-event', formData, {
+            axios.post(`${basePath}/calendar-event`, formData, {
                 headers: {
                     'Accept': 'application/json',
                 }
@@ -129,7 +132,7 @@
             $('.form-control').removeClass('is-invalid');
             $('.form-check-input').removeClass('is-invalid');
 
-            axios.get(`/calendar-event/${id}/edit`)
+            axios.get(`${basePath}/calendar-event/${id}/edit`)
                 .then(response => {
                     const e = response.data.data;
                     $('#title').val(e.title);
@@ -154,7 +157,7 @@
             const formData = new FormData(formElement);
             formData.append('_method', 'PUT');
 
-            axios.post(`/calendar-event/${id}`, formData, {
+            axios.post(`${basePath}/calendar-event/${id}`, formData, {
                 headers: {
                     'Accept': 'application/json',
                 }
@@ -205,7 +208,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/calendar-event/${id}`, {
+                    axios.delete(`${basePath}/calendar-event/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }

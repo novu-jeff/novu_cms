@@ -33,7 +33,10 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
     const albumId = @json($data->id);
+
     $(document).ready(function () {
        Fancybox.bind("[data-fancybox]", {
             Image: {
@@ -76,7 +79,7 @@
 
             const albumId = formData.get('album_id');
 
-            axios.post('/photo-journals/photos/store', formData, {
+            axios.post(`${basePath}/photo-journals/photos/store`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -131,7 +134,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/photo-journals/photos/${id}`, {
+                    axios.delete(`${basePath}/photo-journals/photos/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }
@@ -155,7 +158,7 @@
  
     });
 
-    function loadGalleryImages(endpoint = `/api/photo-journals/photos/load/${albumId}`) {
+    function loadGalleryImages(endpoint = `${basePath}/api/photo-journals/photos/load/${albumId}`) {
         const container = $('#imageContainer');
         
         container.empty();

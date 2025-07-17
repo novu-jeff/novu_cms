@@ -39,6 +39,9 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
         let DataTable = $('#myTable').DataTable({
             processing: true,
@@ -126,7 +129,7 @@
                 payload.committee.push({ name, position });
             });
 
-            axios.post('/standing-committee', payload, {
+            axios.post(`${basePath}/standing-committee`, payload, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -202,7 +205,7 @@
             $('.text-danger').addClass('d-none');
             $('.form-control').removeClass('is-invalid');
 
-            axios.get(`/standing-committee/${id}/edit`)
+            axios.get(`${basePath}/standing-committee/${id}/edit`)
                 .then(response => {
                     const committee = response.data.data;
 
@@ -263,7 +266,7 @@
                 payload.committee.push({ name, position });
             });
 
-            axios.put(`/standing-committee/${id}`, payload, {
+            axios.put(`${basePath}/standing-committee/${id}`, payload, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -331,7 +334,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/standing-committee/${id}`, {
+                    axios.delete(`${basePath}/standing-committee/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }

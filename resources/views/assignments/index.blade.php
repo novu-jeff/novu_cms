@@ -39,6 +39,9 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
         let DataTable = $('#myTable').DataTable({
             processing: true,
@@ -129,7 +132,7 @@
                 formData.append(`members[${index}][position]`, member.position);
             });
 
-            axios.post('/district-assignments', formData, {
+            axios.post(`${basePath}/district-assignments`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -216,7 +219,7 @@
             $('.form-control').removeClass('is-invalid');
             $('.field-error').remove();
 
-            axios.get(`/district-assignments/${id}/edit`)
+            axios.get(`${basePath}/district-assignments/${id}/edit`)
                 .then(response => {
                     const assignment = response.data.data;
 
@@ -282,7 +285,7 @@
                 formData.append(`members[${index}][position]`, member.position);
             });
 
-            axios.post(`/district-assignments/${id}?_method=PUT`, formData, {
+            axios.post(`${basePath}/district-assignments/${id}?_method=PUT`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -361,7 +364,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/district-assignments/${id}`, {
+                    axios.delete(`${basePath}/district-assignments/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }

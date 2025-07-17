@@ -59,6 +59,9 @@
 @section('scripts')
 
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
        
         const myModal = $('#myModal');
@@ -85,7 +88,7 @@
             const formElement = document.getElementById('myForm');
             const formData = new FormData(formElement);
 
-            axios.post('/photo-journals', formData, {
+            axios.post(`${basePath}/photo-journals`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -148,7 +151,7 @@
             $('.text-danger').addClass('d-none');
             $('.form-control').removeClass('is-invalid');
 
-            axios.get(`/photo-journals/${id}/edit`)
+            axios.get(`${basePath}/photo-journals/${id}/edit`)
                 .then(response => {
                     const m = response.data.data;
 
@@ -169,7 +172,7 @@
             const formData = new FormData(formElement);
             formData.append('_method', 'PUT');
 
-            axios.post(`/photo-journals/${id}`, formData, {
+            axios.post(`${basePath}/photo-journals/${id}`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -233,7 +236,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/photo-journals/${id}`, {
+                    axios.delete(`${basePath}/photo-journals/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }

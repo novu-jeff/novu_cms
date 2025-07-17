@@ -41,6 +41,9 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
         let DataTable = $('#myTable').DataTable({
             processing: true,
@@ -98,7 +101,9 @@
             const formElement = document.getElementById('myForm');
             const formData = new FormData(formElement);
 
-            axios.post('/members', formData, {
+            console.log();
+
+            axios.post(`${basePath}/members`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -130,8 +135,9 @@
                         errorSpan.removeClass('d-none').text(messages[0]);
                     });
                 } else {
+                    console.log(error)
                     toastr.error('Something went wrong!', 'Error', {
-                        iconClass: 'toast-error'
+                        iconClass: 'toast-error',
                     });
                 }
             })
@@ -156,7 +162,7 @@
             $('.form-control').removeClass('is-invalid');
 
             // Get member data
-            axios.get(`/members/${id}/edit`)
+            axios.get(`${basePath}/members/${id}/edit`)
                 .then(response => {
                     const m = response.data.data;
 
@@ -192,7 +198,7 @@
             const formData = new FormData(formElement);
             formData.append('_method', 'PUT');
 
-            axios.post(`/members/${id}`, formData, {
+            axios.post(`${basePath}/members/${id}`, formData, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'multipart/form-data'
@@ -245,7 +251,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/members/${id}`, {
+                    axios.delete(`${basePath}/members/${id}`, {
                         headers: {
                             'Accept': 'application/json'
                         }

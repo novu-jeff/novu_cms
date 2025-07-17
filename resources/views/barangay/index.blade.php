@@ -42,6 +42,9 @@
 
 @section('scripts')
 <script>
+    const alias = @json(config('app.alias'));
+    const basePath = alias ? `/${alias}` : '';
+
     $(document).ready(function () {
         let DataTable = $('#myTable').DataTable({
             processing: true,
@@ -135,7 +138,7 @@
             $('.text-danger').addClass('d-none');
             $('.form-control').removeClass('is-invalid');
 
-            axios.get(`/barangay-officials/${id}/edit`)
+            axios.get(`${basePath}/barangay-officials/${id}/edit`)
                 .then(res => {
                     const b = res.data.data;
 
@@ -163,7 +166,7 @@
             const formData = new FormData($('#myForm')[0]);
             formData.append('_method', 'PUT');
 
-            axios.post(`/barangay-officials/${id}`, formData)
+            axios.post(`${basePath}/barangay-officials/${id}`, formData)
                 .then(res => {
                     myModal.modal('hide');
                     DataTable.ajax.reload();
@@ -203,7 +206,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/barangay-officials/${id}`)
+                    axios.delete(`${basePath}/barangay-officials/${id}`)
                         .then(res => {
                             toastr.success(res.data.message, 'Deleted');
                             DataTable.ajax.reload();
