@@ -187,8 +187,8 @@
                     const imageCard = `
                         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 mb-4">
                             <div class="image position-relative">
-                                <a data-fancybox="gallery" href="${imageUrl}">
-                                    <img src="${imageUrl}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;" />
+                                <a data-fancybox="gallery" href="${basePath}${imageUrl}">
+                                    <img src="${basePath}${imageUrl}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;" />
                                 </a>
                                 <div class="btns">
                                     <button type="button" data-id="${image.id}" class="btn-close delete-button text-light" aria-label="Close"></button>
