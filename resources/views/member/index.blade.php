@@ -169,6 +169,7 @@
                     // Populate fields
                     $('#name').val(m.name);
                     $('#position').val(m.position);
+                    $('#description').val(m.description);
 
                     // Image preview (existing or fallback)
                     const imgUrl = m.image_path

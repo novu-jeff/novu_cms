@@ -37,6 +37,7 @@ class MemberController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:members,name',
             'position' => 'required|string|max:255',
+            'description' => 'nullable|string', 
             'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -86,6 +87,7 @@ class MemberController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:members,name,' . $member->id,
             'position' => 'required|string|max:255',
+            'description' => 'nullable|string', 
             'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 

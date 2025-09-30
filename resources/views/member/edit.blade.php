@@ -36,6 +36,13 @@
                 <input type="text" class="form-control" id="position" name="position" required>
                 <div id="position_error" class="text-danger small pt-1 d-none"></div>
             </div>
+
+            <!-- ✅ New Description textarea -->
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter member description..."></textarea>
+                <div id="description_error" class="text-danger small pt-1 d-none"></div>
+            </div>
         </div>
 
         <div class="modal-footer">
