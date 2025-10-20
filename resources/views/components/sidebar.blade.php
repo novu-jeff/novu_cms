@@ -33,7 +33,7 @@
 
         <!-- Organizational Chart -->
         <li class="sidebar-item mt-1 {{ request()->is('organization*') ? 'active' : '' }}">
-            <a href="{{ route('organization.index') }}" class="sidebar-link pe-5" href="#">
+            <a class="sidebar-link pe-5" href="{{ route('organization.index') }}">
                 <i class="fa-solid fa-sitemap"></i> Organizational Chart
             </a>
         </li>
@@ -51,6 +51,27 @@
                 <i class="fa-solid fa-user-tie"></i> Barangay Officials
             </a>
         </li>
-    </ul>
 
+        <!-- ⚙️ Settings Section -->
+        <li class="sidebar-item mt-3 {{ request()->is('settings*') || request()->is('galleries*') ? 'active' : '' }}">
+            <a class="sidebar-link pe-5 d-flex justify-content-between align-items-center" 
+               data-bs-toggle="collapse" href="#settingsMenu" role="button" 
+               aria-expanded="{{ request()->is('settings*') || request()->is('galleries*') ? 'true' : 'false' }}" 
+               aria-controls="settingsMenu">
+                <span><i class="fa-solid fa-gear"></i> Settings</span>
+                <i class="fa-solid fa-chevron-down small"></i>
+            </a>
+
+            <!-- Submenu -->
+            <ul class="collapse list-unstyled ms-4 mt-1 {{ request()->is('settings*') || request()->is('galleries*') ? 'show' : '' }}" id="settingsMenu">
+                <li class="sidebar-item {{ request()->is('galleries*') ? 'active' : '' }}">
+                    <a class="sidebar-link pe-5" href="{{ route('gallery.index') }}">
+                        <i class="fa-regular fa-image"></i> Photo Gallery
+                    </a>
+                </li>
+                {{-- You can add more submenu items here later --}}
+                {{-- <li><a class="sidebar-link" href="#">Website Info</a></li> --}}
+            </ul>
+        </li>
+    </ul>
 </aside>
