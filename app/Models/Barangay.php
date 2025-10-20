@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Barangay extends Model
 {
-    protected $table  = 'barangay_officials';
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    use HasFactory;
+
+    protected $fillable = ['name'];
+
+    public function officials()
+    {
+        return $this->hasMany(BarangayOfficial::class);
+    }
 }
