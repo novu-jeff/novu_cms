@@ -1,0 +1,46 @@
+name: 🚀 Deploy LIS Jones
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔐 SSH into server and deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}   # likely "nginxserver"
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            echo "→ Starting deployment on server..."
+
+            cd /var/www/html/jones_cms
+
+            echo "→ Setting Git safe directory..."
+            git config --global --add safe.directory /var/www/html/jones_cms
+
+            echo "→ Pulling latest code from main..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "→ Optimizing Laravel..."
+            
+            sudo php artisan config:cache
+            sudo php artisan route:cache
+            sudo php artisan view:cache
+            sudo php artisan route:clear
+            sudo php artisan optimize:clear
+            sudo php artisan migrate --force
+
+            echo "✅ Deployment completed successfully!"
