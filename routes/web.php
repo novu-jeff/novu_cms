@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::prefix('jones')->group(function () {
 // Auth::routes();
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
@@ -86,5 +86,5 @@ Route::middleware('api')->prefix('api')->group(function () {
     Route::post('/photo/toggle/{id}', [GalleriesController::class, 'togglePhotoActive']);
 
 
-
+});
 });
