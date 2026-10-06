@@ -3,6 +3,30 @@
         <img src="{{ asset('default/cms_nav.png') }}" alt="logo">
     </div>
     <ul class="sidebar-list">
+        @php
+            $user = auth()->user();
+        @endphp
+
+    @if ($user && $user->role && $user->role->name === 'secretary')
+            {{-- SB Secretary menu --}}
+            <li class="sidebar-item mt-1 {{ request()->is('secretary/documents*') ? 'active' : '' }}">
+                <a class="sidebar-link pe-5" href="{{ route('secretary.documents') }}">
+                    <i class="fa-solid fa-file-lines"></i> Documents
+                </a>
+            </li>
+
+            <li class="sidebar-item mt-1 {{ request()->is('secretary/session-meetings*') ? 'active' : '' }}">
+                <a class="sidebar-link pe-5" href="{{ route('session-meetings.index') }}">
+                    <i class="fa-solid fa-handshake"></i> Session Meetings
+                </a>
+            </li>
+
+            <li class="sidebar-item mt-1 {{ request()->is('secretary/settings/live-sessions*') ? 'active' : '' }}">
+                <a class="sidebar-link pe-5" href="{{ route('settings.live.edit') }}">
+                    <i class="fa-solid fa-video"></i>  Live Session Settings
+                </a>
+            </li>
+        @else
         <!-- Members -->
         <li class="sidebar-item mt-1 {{ request()->is('members*') ? 'active' : '' }}">
             <a class="sidebar-link pe-5" href="{{ route('members.index') }}">
@@ -69,9 +93,27 @@
                         <i class="fa-regular fa-image"></i> Photo Gallery
                     </a>
                 </li>
+                 <li class="sidebar-item {{ request()->is('users*') ? 'active' : '' }}">
+                        <a class="sidebar-link pe-5" href="{{ url('/users') }}">
+                            <i class="fa-solid fa-user-gear"></i> Users
+                        </a>
+                    </li>
+                   <!-- <li class="sidebar-item {{ request()->is('roles*') ? 'active' : '' }}">
+                        <a class="sidebar-link pe-5" href="{{ url('/roles') }}">
+                            <i class="fa-solid fa-id-card-clip"></i> Roles
+                        </a>
+                    </li>-->
+                @if(config('app.lis_url'))
+                <li class="sidebar-item">
+                    <a class="sidebar-link pe-5" href="{{ rtrim(config('app.lis_url'), '/') }}/photo-journals" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-external-link-alt"></i> View Photo Journal on LIS
+                    </a>
+                </li>
+                @endif
                 {{-- You can add more submenu items here later --}}
                 {{-- <li><a class="sidebar-link" href="#">Website Info</a></li> --}}
             </ul>
         </li>
+         @endif
     </ul>
 </aside>

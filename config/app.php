@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'LIS CMS'),
 
+    'lis_storage_url' => env('LIS_STORAGE_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -123,5 +125,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'alias' => env('ALIAS', null)
+    'alias' => env('ALIAS', null),
+
+    'lis_url' => env('LIS_URL', 'https://lis.novulutions.com'),
+    'cors_allowed_origin' => env('CORS_ALLOWED_ORIGIN', 'https://lis.novulutions.com'),
+
+    'cms_url' => env('CMS_URL', env('APP_URL', 'http://localhost')),
+    'dms_url' => env('DMS_URL', 'http://localhost'),
+    'logo' => env('APP_LOGO', 'cms_nav.png'),
+    'client' => env('APP_CLIENT', 'Municipality of Jones'),
+    'whitepaper_product' => env('WHITEPAPER_PRODUCT', 'CMS'),
 ];

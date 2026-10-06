@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MembersAccount;
 
 class Member extends Model
 {
+    protected $connection = 'mysql';
+
+    protected $table = 'members';
+
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
         protected $fillable = [
@@ -26,4 +31,9 @@ class Member extends Model
             'isActive',
             'sort_order',
         ];
+
+        public function account()
+        {
+            return $this->hasOne(MembersAccount::class, 'member_id');
+        }
 }

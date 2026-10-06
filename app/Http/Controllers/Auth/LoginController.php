@@ -27,6 +27,20 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/members';
 
+
+    protected function redirectTo()
+    {
+        $user = auth()->user();
+
+        // SB Secretary own dashboard
+        if ($user && $user->role && $user->role->name === 'secretary') {
+            return route('secretary.documents');
+        }
+
+        // Default dashboard for other users
+        return '/members';
+    }
+
     /**
      * Create a new controller instance.
      *
