@@ -1,4 +1,4 @@
-name: 🚀 Deploy LIS Jones
+name: 🚀 Deploy CMS Buguey
 
 on:
   push:
@@ -25,10 +25,10 @@ jobs:
           script: |
             echo "→ Starting deployment on server..."
 
-            cd /var/www/html/jones_cms
+            cd /var/www/html/cms/buguey
 
             echo "→ Setting Git safe directory..."
-            git config --global --add safe.directory /var/www/html/jones_cms
+            git config --global --add safe.directory /var/www/html/cms/buguey
 
             echo "→ Pulling latest code from main..."
             git fetch origin main

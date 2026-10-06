@@ -69,6 +69,13 @@
                         <i class="fa-regular fa-image"></i> Photo Gallery
                     </a>
                 </li>
+                @if(config('app.lis_url'))
+                <li class="sidebar-item">
+                    <a class="sidebar-link pe-5" href="{{ rtrim(config('app.lis_url'), '/') }}/photo-journals" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-external-link-alt"></i> View Photo Journal on LIS
+                    </a>
+                </li>
+                @endif
                 {{-- You can add more submenu items here later --}}
                 {{-- <li><a class="sidebar-link" href="#">Website Info</a></li> --}}
             </ul>

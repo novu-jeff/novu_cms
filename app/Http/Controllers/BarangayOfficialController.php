@@ -122,7 +122,7 @@ class BarangayOfficialController extends Controller
         if ($request->filled('barangay_id')) {
             $query->where('barangay_id', $request->barangay_id);
         }else{
-            $query->where('barangay_id', 1); // default to barangay_id 1 if not provided
+            $query->where('barangay_id', 5); // default to barangay_id 1 if not provided
         }
 
         return response()->json([

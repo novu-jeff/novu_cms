@@ -11,14 +11,12 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\BarangayOfficialController;
 use App\Http\Controllers\GalleriesController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WhitepaperController;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// Auth::routes();
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
+
+Route::get('/whitepaper', [WhitepaperController::class, 'index'])->name('whitepaper');
 
 Route::get('/', function () {
     return auth()->check()
