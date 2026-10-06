@@ -58,6 +58,17 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        'lis_mysql' => [
+            'driver' => 'mysql',
+            'host' => env('DB_LIS_HOST'),
+            'port' => env('DB_LIS_PORT'),
+            'database' => env('DB_LIS_DATABASE'),
+            'username' => env('DB_LIS_USERNAME'),
+            'password' => env('DB_LIS_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+        ],
 
         'mariadb' => [
             'driver' => 'mariadb',

@@ -10,15 +10,20 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\BarangayOfficialController;
 use App\Http\Controllers\GalleriesController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SecretaryDocumentController;
+use App\Http\Controllers\SecretaryAgendaController;
+use App\Http\Controllers\SessionMeetingController;
+use App\Http\Controllers\LiveSessionController;
+use App\Http\Controllers\SecretaryMinutesController;
+use App\Http\Controllers\SecretaryRemarkController;
+use App\Http\Controllers\WhitepaperController;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// Auth::routes();
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
+
+Route::get('/whitepaper', [WhitepaperController::class, 'index'])->name('whitepaper');
 
 Route::get('/', function () {
     return auth()->check()
@@ -28,6 +33,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('/members', MemberController::class)->except('create', 'show');
+     Route::get('/members/{member}/account', [MemberController::class, 'account'])->name('members.account.show');
+    Route::post('/members/{member}/account', [MemberController::class, 'saveAccount'])->name('members.account.save');
     Route::resource('/standing-committee', CommitteeController::class)->except('create', 'show');
     Route::resource('/district-assignments', AssignmentController::class)->except('create', 'show');
     Route::resource('/photo-journals', AlbumController::class);
@@ -64,6 +71,81 @@ Route::middleware(['auth'])->group(function () {
     
     Route::post('/members/reorder', [MemberController::class, 'updateOrder'])->name('members.reorder');
 
+    // User management
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+
+    Route::prefix('secretary')->group(function () {
+
+        Route::get('/documents', 
+            [SecretaryDocumentController::class,'index']
+        )->name('secretary.documents');
+    
+        Route::post('/documents/{id}/approve',
+            [SecretaryDocumentController::class,'approve']
+        )->name('secretary.documents.approve');
+    
+        Route::post('/documents/{id}/reject',
+            [SecretaryDocumentController::class,'reject']
+        )->name('secretary.documents.reject');
+
+        Route::post('/documents/{id}/update-session',
+            [SecretaryDocumentController::class, 'updateSession']
+        )->name('secretary.documents.updateSession');
+
+        Route::resource('session-meetings', SessionMeetingController::class);
+
+        Route::get('/session/{id}/agenda',
+        [SecretaryAgendaController::class,'index']
+        )->name('secretary.session.agenda');
+
+        Route::post('/session/agenda/reorder',
+            [SecretaryAgendaController::class,'reorder']
+        )->name('secretary.session.agenda.reorder');
+
+        Route::get('/session/{id}/packet',
+            [SecretaryAgendaController::class,'packet']
+        )->name('secretary.session.packet');
+
+        Route::get('/session/{id}/minutes-template',
+            [SecretaryAgendaController::class,'minutesTemplate']
+            )->name('secretary.session.minutes');
+
+        Route::get(
+            '/session/{id}/minutes',
+            [SecretaryMinutesController::class,'index']
+            )->name('secretary.minutes.index');
+            
+        Route::post(
+            '/session/{id}/minutes',
+            [SecretaryMinutesController::class,'store']
+            )->name('secretary.minutes.store'); 
+            
+        Route::get(
+            '/session/{id}/minutes-generate',
+            [SecretaryMinutesController::class,'generate']
+            )->name('secretary.minutes.generate');   
+            
+        Route::get(
+            '/secretary/session/{id}/minutes-review',
+            [SecretaryMinutesController::class,'review']
+            )->name('secretary.minutes.review');  
+            
+        Route::get(
+                '/session/{id}/remarks',
+                [SecretaryRemarkController::class,'index']
+                )->name('secretary.remarks.index');    
+
+        // routes/web.php
+
+    Route::get('/settings/live-session', [\App\Http\Controllers\LiveSessionController::class, 'editLive'])
+        ->name('settings.live.edit');
+    Route::post('/settings/live-session', [\App\Http\Controllers\LiveSessionController::class, 'updateLive'])
+        ->name('settings.live.update');
+
+    
+    });
 
 });
 

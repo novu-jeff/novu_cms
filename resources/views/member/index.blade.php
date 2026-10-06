@@ -16,6 +16,53 @@
 
     @include('member.edit') <!-- Modal -->
 
+    <!-- Account Modal -->
+    <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" id="accountForm" class="w-100">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accountModalLabel">Member Account</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="account_member_id" name="member_id">
+
+                        <div class="mb-3">
+                            <label for="account_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="account_email" name="email" required>
+                            <div id="account_email_error" class="text-danger small pt-1 d-none"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="account_password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="account_password" name="password">
+                            <div id="account_password_error" class="text-danger small pt-1 d-none"></div>
+                            <small class="text-muted" id="account_password_help">Leave blank to keep current password.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="account_password_confirmation" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="account_password_confirmation" name="password_confirmation">
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" value="1" id="account_is_active" name="is_active" checked>
+                            <label class="form-check-label" for="account_is_active">
+                                Active account
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Account</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Table Card -->
     <div class="card shadow border-1 rounded-4">
         <div class="card-body">
@@ -44,6 +91,7 @@ const basePath = alias ? `/${alias}` : '';
 
 $(document).ready(function () {
     let currentMemberId = null; // null = add, id = edit
+        let currentAccountMemberId = null;
 
     // ================= Dynamic List Helper =================
     function setupDynamicList(listId, addBtnId, hiddenInputId, placeholderText, existingValues = []) {
@@ -277,6 +325,89 @@ console.log(`${basePath}/members/${currentMemberId}/edit`);
 
          // initialize manually once table loaded
     DataTable.on('draw', initSortable);
+
+        // ================ Member Account (Add / Edit) =================
+        const accountModal = $('#accountModal');
+
+        $(document).on('click', '.account-button', function () {
+            currentAccountMemberId = $(this).data('id');
+
+            // Get row data from DataTable for name/email fallback
+            const row = $(this).closest('tr');
+            const rowData = DataTable.row(row).data() || {};
+            const memberName = rowData.name || 'Member';
+            const memberEmail = rowData.email || '';
+
+            $('#accountForm')[0].reset();
+            $('#account_member_id').val(currentAccountMemberId);
+            $('#accountModalLabel').text(`Account for ${memberName}`);
+            $('#account_email_error').addClass('d-none').text('');
+            $('#account_password_error').addClass('d-none').text('');
+            $('#account_email').removeClass('is-invalid');
+            $('#account_password').removeClass('is-invalid');
+
+            axios.get(`${basePath}/members/${currentAccountMemberId}/account`)
+                .then(res => {
+                    const acc = res.data.data;
+                    $('#account_email').val(acc.email);
+                    $('#account_is_active').prop('checked', acc.is_active ? true : false);
+                })
+                .catch(err => {
+                    if (err.response && err.response.status !== 404) {
+                        toastr.error(err.response?.data?.message || 'Failed to load account.');
+                    }
+
+                    $('#account_is_active').prop('checked', true);
+                    $('#account_password').val('');
+                    $('#account_password_confirmation').val('');
+
+                    // If no existing account (404) or any error, prefill email from members table if available
+                    if (memberEmail) {
+                        $('#account_email').val(memberEmail);
+                    }
+                })
+                .finally(() => {
+                    accountModal.modal('show');
+                });
+        });
+
+        $('#accountForm').on('submit', function (e) {
+            e.preventDefault();
+
+            if (!currentAccountMemberId) {
+                toastr.error('No member selected.');
+                return;
+            }
+
+            const formData = new FormData(this);
+
+            axios.post(`${basePath}/members/${currentAccountMemberId}/account`, formData)
+                .then(res => {
+                    toastr.success(res.data.message || 'Account saved successfully.');
+                    accountModal.modal('hide');
+                    DataTable.ajax.reload(null, false);
+                })
+                .catch(err => {
+                    $('#account_email_error').addClass('d-none').text('');
+                    $('#account_password_error').addClass('d-none').text('');
+                    $('#account_email').removeClass('is-invalid');
+                    $('#account_password').removeClass('is-invalid');
+
+                    if (err.response && err.response.status === 422) {
+                        const errors = err.response.data.errors;
+                        if (errors.email) {
+                            $('#account_email').addClass('is-invalid');
+                            $('#account_email_error').removeClass('d-none').text(errors.email[0]);
+                        }
+                        if (errors.password) {
+                            $('#account_password').addClass('is-invalid');
+                            $('#account_password_error').removeClass('d-none').text(errors.password[0]);
+                        }
+                    } else {
+                        toastr.error(err.response?.data?.message || 'Failed to save account.');
+                    }
+                });
+        });
 
 });
 </script>

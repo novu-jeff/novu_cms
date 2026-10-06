@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\MembersAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 class MemberController extends Controller
@@ -15,7 +18,7 @@ class MemberController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Member::query()->orderBy('sort_order', 'asc');
+            $query = Member::with('account')->orderBy('sort_order', 'asc');
             return $this->datatable($query);
         }
 
@@ -208,7 +211,12 @@ class MemberController extends Controller
                 return '<img src="' . $url . '" alt="Image" width="50" height="50" style="object-fit: cover; border-radius: 0.25rem;">';
             })
             ->addColumn('actions', function ($row) {
+                $hasAccount = $row->account ? true : false;
+
                 return '<div class="d-flex">
+                    <button data-id="' . $row->id . '" class="btn btn-outline-primary btn-sm ms-1 account-button" title="' . ($hasAccount ? 'Edit Account' : 'Add Account') . '">
+                        <i class="fas fa-user"></i>
+                    </button>
                     <button data-id="' . $row->id . '" class="btn btn-outline-warning btn-sm ms-1 edit-button" title="Edit">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -219,6 +227,83 @@ class MemberController extends Controller
             })
             ->rawColumns(['image', 'actions'])
             ->make(true);
+    }
+
+
+    public function account($memberId)
+    {
+        $member = Member::with('account')->findOrFail($memberId);
+
+        if (!$member->account) {
+            return response()->json([
+                'message' => 'Account not found for this member.',
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $member->account,
+            'message' => 'success',
+        ], 200);
+    }
+
+    public function saveAccount(Request $request, $memberId)
+    {
+        $member = Member::with('account')->findOrFail($memberId);
+        $account = $member->account;
+
+        $rules = [
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('members_accounts', 'email')->ignore($account?->id),
+            ],
+            'password' => [
+                $account ? 'nullable' : 'required',
+                'string',
+                'min:8',
+                'confirmed',
+            ],
+            'is_active' => ['nullable', 'boolean'],
+        ];
+
+        $validated = $request->validate($rules);
+
+        DB::beginTransaction();
+
+        try {
+            if ($account) {
+                $account->email = $validated['email'];
+
+                if (!empty($validated['password'])) {
+                    $account->password = Hash::make($validated['password']);
+                }
+
+                $account->is_active = $request->has('is_active');
+                $account->save();
+            } else {
+                $account = MembersAccount::create([
+                    'member_id' => $member->id,
+                    'email' => $validated['email'],
+                    'password' => Hash::make($validated['password']),
+                    'is_active' => $request->has('is_active'),
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'data' => $account,
+                'message' => 'Account saved successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => 'account_save_failed',
+            ], 500);
+        }
     }
 
 
