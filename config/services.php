@@ -44,4 +44,8 @@ return [
         'minutes_model' => env('OPENAI_MINUTES_MODEL', 'gpt-4o-mini'),
     ],
 
+    'lis' => [
+        'url' => env('LIS_URL', 'https://lis-staging-app.novulutions.com'),
+    ],
+
 ];

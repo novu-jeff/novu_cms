@@ -266,7 +266,7 @@
         ->get();
 
     $documentCount = method_exists($documents, 'total') ? $documents->total() : $documents->count();
-    $storageBaseUrl = rtrim(env('LIS_STORAGE_URL', config('app.url')), '/');
+    $storageBaseUrl = rtrim(env('LIS_URL', config('app.lis_url')), '/');
 @endphp
 
 <div class="container-fluid px-3 px-lg-4 py-4 member-documents-page">
@@ -332,7 +332,15 @@
                     @forelse($documents as $doc)
                         @php
                             $currentSession = optional(optional($doc->sessionDocument)->session);
-                            $documentUrl = $storageBaseUrl . '/' . ltrim($doc->file_path ?? '', '/');
+
+                            $documentPath = ltrim($doc->file_path ?? '', '/');
+
+                            // Ensure the path starts with storage/
+                            if (!str_starts_with($documentPath, 'storage/')) {
+                                $documentPath = 'storage/' . $documentPath;
+                            }
+
+                            $documentUrl = $storageBaseUrl . '/' . $documentPath;
                         @endphp
                         <tr>
                             <td class="ps-lg-4">
