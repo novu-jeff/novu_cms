@@ -43,7 +43,7 @@ class LoginController extends Controller
             $user->role &&
             strtolower(trim($user->role->name ?? '')) === 'presiding_officer'
         ) {
-            return route('presiding-officer.minutes.index');
+            return route('presiding-officer.dashboard');
         }
 
         // Default dashboard for other users
