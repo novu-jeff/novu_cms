@@ -155,7 +155,28 @@ img {
     .wp-audience {
         font-size: 0.9rem;
         opacity: 0.75;
-        margin-bottom: 2rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .wp-actions {
+        margin: 0 0 1.75rem;
+    }
+
+    .wp-download {
+        display: inline-flex;
+        align-items: center;
+        background: #fff;
+        color: var(--wp-primary);
+        padding: 0.55rem 1.25rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+
+        &:hover {
+            background: #f0f4f8;
+            color: var(--wp-primary-dark);
+        }
     }
 
     .wp-meta-grid {

@@ -29,9 +29,29 @@ class UpdateCommittee extends FormRequest
                     ->ignore($this->route('standing_committee'))
                     ->where('isActive', true),
             ],
-            'committee' => 'required|array|min:1',
-            'committee.*.name' => 'required|string|max:255',
-            'committee.*.position' => 'nullable|string|max:255',
+
+            'committee' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+
+            'committee.*.member_id' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('members', 'id')
+                    ->where('isActive', true),
+            ],
+
+            'committee.*.position' => [
+                'required',
+                Rule::in([
+                    'Chairperson',
+                    'Vice-Chairperson',
+                    'Member',
+                ]),
+            ],
         ];
     }
 
@@ -44,7 +64,11 @@ class UpdateCommittee extends FormRequest
             'name.required' => 'The committee name is required.',
             'name.unique' => 'This committee name is already taken.',
             'committee.required' => 'At least one member is required.',
-            'committee.*.name.required' => 'Each member must have a name.',
+            'committee.*.member_id.required' => 'Please select an SB member.',
+            'committee.*.member_id.distinct' => 'An SB member cannot be assigned more than once to the same committee.',
+            'committee.*.member_id.exists' => 'The selected SB member is invalid or inactive.',
+            'committee.*.position.required' => 'Please select a committee role.',
+            'committee.*.position.in' => 'The selected committee role is invalid.',
         ];
     }
 }

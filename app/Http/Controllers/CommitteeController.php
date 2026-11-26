@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommittee;
 use App\Http\Requests\UpdateCommittee;
 use App\Models\Committee;
+use App\Models\Member;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -28,17 +29,19 @@ class CommitteeController extends Controller
     {
         // Get all active committees with their members
         $data = DB::table('standing_comittee as sc')
-            ->where('sc.isActive', true)
-            ->leftJoin('standing_comittee_member as scm', 'sc.id', '=', 'scm.standing_comittee_id')
-            ->select(
-                'sc.id as committee_id',
-                'sc.name as committee_name',
-                'sc.isActive as committee_active',
-                'scm.id as member_id',
-                'scm.name as member_name',
-                'scm.position as member_position',
-                'scm.isActive as member_active'
-            )
+                ->where('sc.isActive', true)
+                ->leftJoin('standing_comittee_member as scm', 'sc.id', '=', 'scm.standing_comittee_id')
+                ->leftJoin('members as m', 'm.id', '=', 'scm.member_id')
+                ->select(
+                    'sc.id as committee_id',
+                    'sc.name as committee_name',
+                    'sc.isActive as committee_active',
+                    'scm.id as assignment_id',
+                    'scm.member_id',
+                    DB::raw('COALESCE(m.name, scm.name) as member_name'),
+                    'scm.position as member_position',
+                    'scm.isActive as member_active'
+                )
             ->get()
             ->groupBy('committee_id')
             ->map(function ($group) {
@@ -49,7 +52,8 @@ class CommitteeController extends Controller
                     'isActive' => $committee->committee_active,
                     'members' => $group->map(function ($member) {
                         return [
-                            'id' => $member->member_id,
+                            'id' => $member->assignment_id,
+                            'member_id' => $member->member_id,
                             'name' => $member->member_name,
                             'position' => $member->member_position,
                             'isActive' => $member->member_active,
@@ -78,16 +82,22 @@ class CommitteeController extends Controller
             ]);
             $memberRows = collect($data['committee'])
                 ->map(function ($member) use ($committeeId) {
+                    $sbMember = DB::table('members')
+                        ->where('id', $member['member_id'])
+                        ->first();
+
                     return [
                         'standing_comittee_id' => $committeeId,
-                        'name'       => $member['name'],
-                        'position'   => $member['position'] ?? null,
-                        'isActive'   => true,
+                        'member_id' => $member['member_id'],
+                        'name' => $sbMember->name,
+                        'position' => $member['position'],
+                        'isActive' => true,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
                 })
                 ->toArray();
+
             DB::table('standing_comittee_member')->insert($memberRows);
 
             DB::commit();
@@ -123,11 +133,17 @@ class CommitteeController extends Controller
         }
 
         // Get the related members
-        $members = DB::table('standing_comittee_member')
-            ->where('standing_comittee_id', $id)
-            ->where('isActive', true)
-            ->select('id', 'name', 'position')
-            ->get();
+       $members = DB::table('standing_comittee_member as scm')
+        ->leftJoin('members as m', 'm.id', '=', 'scm.member_id')
+        ->where('scm.standing_comittee_id', $id)
+        ->where('scm.isActive', true)
+        ->select(
+            'scm.id',
+            'scm.member_id',
+            DB::raw('COALESCE(m.name, scm.name) as name'),
+            'scm.position'
+        )
+        ->get();
 
         return response()->json([
             'data' => [
@@ -144,46 +160,82 @@ class CommitteeController extends Controller
      */
     public function update(UpdateCommittee $request, string $id)
     {
+        $data = $request->validated();
+
         DB::beginTransaction();
 
         try {
-            // Update the standing committee name
             DB::table('standing_comittee')
                 ->where('id', $id)
                 ->update([
-                    'name' => $request->name,
+                    'name' => $data['name'],
                     'updated_at' => now(),
                 ]);
 
-            // Delete existing members
-            DB::table('standing_comittee_member')
+            $existingAssignments = DB::table('standing_comittee_member')
                 ->where('standing_comittee_id', $id)
-                ->delete();
+                ->where('isActive', true)
+                ->whereNotNull('member_id')
+                ->get()
+                ->keyBy('member_id');
 
-            // Prepare new members for bulk insert
-            $members = collect($request->committee)->map(function ($member) use ($id) {
-                return [
+            $incomingMembers = collect($data['committee'])
+                ->keyBy('member_id');
+
+            // Deactivate assignments removed from the committee.
+            foreach ($existingAssignments as $memberId => $assignment) {
+                if (!$incomingMembers->has($memberId)) {
+                    DB::table('standing_comittee_member')
+                        ->where('id', $assignment->id)
+                        ->update([
+                            'isActive' => false,
+                            'term_end' => now()->toDateString(),
+                            'updated_at' => now(),
+                        ]);
+                }
+            }
+
+            // Update existing assignments or create new ones.
+            foreach ($incomingMembers as $memberId => $memberData) {
+                if ($existingAssignments->has($memberId)) {
+                    DB::table('standing_comittee_member')
+                        ->where('id', $existingAssignments[$memberId]->id)
+                        ->update([
+                            'position' => $memberData['position'],
+                            'updated_at' => now(),
+                        ]);
+
+                    continue;
+                }
+
+                $sbMember = DB::table('members')
+                    ->where('id', $memberId)
+                    ->first();
+
+                DB::table('standing_comittee_member')->insert([
                     'standing_comittee_id' => $id,
-                    'name' => $member['name'],
-                    'position' => $member['position'] ?? null,
+                    'member_id' => $memberId,
+                    'name' => $sbMember->name,
+                    'position' => $memberData['position'],
                     'isActive' => true,
+                    'term_start' => now()->toDateString(),
                     'created_at' => now(),
                     'updated_at' => now(),
-                ];
-            })->toArray();
-
-            // Insert new members
-            DB::table('standing_comittee_member')->insert($members);
+                ]);
+            }
 
             DB::commit();
 
-            return response()->json(['message' => 'Committee updated successfully.'], 200);
-        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Committee updated successfully.',
+            ], 200);
+
+        } catch (\Throwable $e) {
             DB::rollBack();
 
             return response()->json([
                 'message' => 'Update failed.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

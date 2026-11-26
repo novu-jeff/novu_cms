@@ -17,6 +17,13 @@ return [
 
     'lis_storage_url' => env('LIS_STORAGE_URL'),
 
+    // host:port:ip entries so server-side HTTP reaches local nginx.
+    // This host cannot connect to its own public address.
+    'http_resolve' => array_values(array_filter(array_map(
+        'trim',
+        explode(',', (string) env('HTTP_RESOLVE', ''))
+    ))),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -127,12 +134,13 @@ return [
 
     'alias' => env('ALIAS', null),
 
-    'lis_url' => env('LIS_URL', 'https://lis.novulutions.com'),
-    'cors_allowed_origin' => env('CORS_ALLOWED_ORIGIN', 'https://lis.novulutions.com'),
+    'lis_url' => env('LIS_URL', 'https://lis-staging-app.novulutions.com'),
+    'committee_document_secret' => env('COMMITTEE_DOCUMENT_SECRET'),
+    'cors_allowed_origin' => env('CORS_ALLOWED_ORIGIN', 'https://lis-staging-app.novulutions.com'),
 
     'cms_url' => env('CMS_URL', env('APP_URL', 'http://localhost')),
     'dms_url' => env('DMS_URL', 'http://localhost'),
     'logo' => env('APP_LOGO', 'cms_nav.png'),
-    'client' => env('APP_CLIENT', 'Municipality of Jones'),
+    'client' => env('APP_CLIENT', 'Municipality of Magigiting'),
     'whitepaper_product' => env('WHITEPAPER_PRODUCT', 'CMS'),
 ];

@@ -8,13 +8,29 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
+  @php
+        $organizationSetting = \App\Models\OrganizationSetting::first();
 
+        $faviconUrl = $organizationSetting?->logo_path
+            ? \Illuminate\Support\Facades\Storage::url($organizationSetting->logo_path)
+            : asset('default/cms_nav.png');
+    @endphp
+
+    <link rel="icon" type="image/png" href="{{ $faviconUrl }}">
+    <link rel="shortcut icon" href="{{ $faviconUrl }}">
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+
+<!-- Bootstrap Icons -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+>
 
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -51,6 +67,8 @@
         </div>
 
         @include('components.sidebar')
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
         <main>
             @include('components.navbar')

@@ -31,4 +31,17 @@ return [
         ],
     ],
 
+    'organization_settings' => [
+        'token' => env('ORG_SETTINGS_API_TOKEN'),
+    ],
+
+    'assemblyai' => [
+        'api_key' => env('ASSEMBLYAI_API_KEY'),
+    ],
+
+    'openai' => [
+        'api_key' => env('OPENAI_API_KEY'),
+        'minutes_model' => env('OPENAI_MINUTES_MODEL', 'gpt-4o-mini'),
+    ],
+
 ];

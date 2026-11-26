@@ -1,79 +1,462 @@
+
 @extends('layouts.app')
 
+@section('styles')
+<style>
+    .members-page {
+        padding: 32px;
+        max-width: 1800px;
+        margin: 0 auto;
+        color: #1e293b;
+    }
+
+    .members-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+    }
+
+    .members-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .members-title {
+        margin: 0 0 8px;
+        font-size: clamp(25px, 3vw, 32px);
+        line-height: 1.2;
+        font-weight: 750;
+        letter-spacing: -0.8px;
+        color: #172338;
+    }
+
+    .members-subtitle {
+        margin: 0;
+        font-size: 14px;
+        color: #718096;
+        line-height: 1.6;
+    }
+
+    .members-add-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 46px;
+        padding: 0 20px;
+        border: 0;
+        border-radius: 10px;
+        background: #315efb;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 5px 12px rgba(49, 94, 251, .18);
+        transition: background .2s ease, transform .2s ease;
+    }
+
+    .members-add-btn:hover {
+        background: #244bd6;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .members-card {
+        background: #fff;
+        border: 1px solid #e6ebf2;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, .035);
+        overflow: hidden;
+    }
+
+    .members-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 22px 24px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .members-card-title {
+        margin: 0 0 5px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .members-card-description {
+        margin: 0;
+        font-size: 13px;
+        color: #8491a5;
+    }
+
+    .members-table-container {
+        padding: 8px 24px 20px;
+    }
+
+    #myTable {
+        width: 100% !important;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0 !important;
+    }
+
+    #myTable thead th {
+        padding: 16px 14px;
+        background: #f8fafc;
+        color: #64748b;
+        border-bottom: 1px solid #e9eef5;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .7px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    #myTable tbody td {
+        padding: 15px 14px;
+        border-bottom: 1px solid #eef2f7;
+        color: #334155;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    #myTable tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    #myTable tbody tr:hover td {
+        background: #f8faff;
+    }
+
+    #myTable tbody td img {
+        width: 46px;
+        height: 46px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid #e8edf4;
+        background: #f8fafc;
+    }
+
+    .members-table-container .dataTables_wrapper {
+        padding-top: 14px;
+    }
+
+    .members-table-container .dataTables_wrapper .dataTables_length,
+    .members-table-container .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 18px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .members-table-container .dataTables_wrapper .dataTables_length select,
+    .members-table-container .dataTables_wrapper .dataTables_filter input {
+        min-height: 38px;
+        padding: 7px 12px;
+        border: 1px solid #dce3ed;
+        border-radius: 8px;
+        background-color: #fff;
+        color: #334155;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .members-table-container .dataTables_wrapper .dataTables_filter input {
+        min-width: 220px;
+        margin-left: 8px;
+    }
+
+    .members-table-container .dataTables_wrapper .dataTables_length select:focus,
+    .members-table-container .dataTables_wrapper .dataTables_filter input:focus {
+        border-color: #8da8ff;
+        box-shadow: 0 0 0 3px rgba(49, 94, 251, .09);
+    }
+
+    .members-table-container .dataTables_wrapper .dataTables_info {
+        padding-top: 18px;
+        color: #8491a5;
+        font-size: 12px;
+    }
+
+    .members-table-container .dataTables_wrapper .dataTables_paginate {
+        padding-top: 12px;
+    }
+
+    .members-table-container .dataTables_wrapper .paginate_button {
+        border-radius: 7px !important;
+        font-size: 12px;
+    }
+
+    .members-table-container .dataTables_wrapper .paginate_button.current {
+        border: 1px solid #315efb !important;
+        background: #315efb !important;
+        color: #fff !important;
+    }
+
+    .members-table-container .dataTables_processing {
+        background: rgba(255, 255, 255, .96);
+        border: 1px solid #e6ebf2;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+        color: #334155;
+    }
+
+    /* Existing row action buttons */
+    #myTable .btn {
+        border-radius: 7px;
+    }
+
+    /* Modal polish */
+    #myModal .modal-content,
+    #accountModal .modal-content {
+        border: 1px solid #e6ebf2;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(15, 23, 42, .16);
+        overflow: hidden;
+    }
+
+    #myModal .modal-header,
+    #accountModal .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    #myModal .modal-title,
+    #accountModal .modal-title {
+        color: #1e293b;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    #myModal .modal-body,
+    #accountModal .modal-body {
+        padding: 24px;
+    }
+
+    #myModal .modal-footer,
+    #accountModal .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #edf0f5;
+        background: #fafbfd;
+    }
+
+    #myModal .form-control,
+    #myModal .form-select,
+    #accountModal .form-control {
+        min-height: 42px;
+        border-radius: 8px;
+        border-color: #dce3ed;
+        font-size: 13px;
+    }
+
+    #myModal .form-control:focus,
+    #myModal .form-select:focus,
+    #accountModal .form-control:focus {
+        border-color: #8da8ff;
+        box-shadow: 0 0 0 3px rgba(49, 94, 251, .09);
+    }
+
+    @media (max-width: 768px) {
+        .members-page {
+            padding: 22px 15px;
+        }
+
+        .members-header {
+            align-items: stretch;
+            margin-bottom: 22px;
+        }
+
+        .members-add-btn {
+            width: 100%;
+        }
+
+        .members-card-header {
+            padding: 18px;
+        }
+
+        .members-table-container {
+            padding: 8px 14px 16px;
+        }
+
+        .members-table-container .dataTables_wrapper .dataTables_filter,
+        .members-table-container .dataTables_wrapper .dataTables_length {
+            float: none;
+            text-align: left;
+            width: 100%;
+        }
+
+        .members-table-container .dataTables_wrapper .dataTables_filter input {
+            display: block;
+            width: 100%;
+            margin: 8px 0 0;
+        }
+
+        .members-table-container .dataTables_wrapper .dataTables_length select {
+            margin: 0 5px;
+        }
+
+        #myModal .modal-body,
+        #accountModal .modal-body {
+            padding: 18px;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
-<div class="container py-5">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+<div class="members-page">
+
+    <div class="members-header">
         <div>
-            <h2 class="fw-semibold text-dark mb-1">Members</h2>
-            <p class="text-muted mb-0">Manage members in this module</p>
+            <div class="members-eyebrow">
+                <i class="fa-solid fa-users"></i>
+                Administration
+            </div>
+
+            <h1 class="members-title">Members</h1>
+
+            <p class="members-subtitle">
+                Manage member profiles, positions, and account access.
+            </p>
         </div>
 
-        <button type="button" class="btn btn-secondary p-3 px-5" id="create_button">
-            <i class="fas fa-plus me-1"></i> Add Member
+        <button type="button" class="members-add-btn" id="create_button">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Member</span>
         </button>
     </div>
 
-    @include('member.edit') <!-- Modal -->
+    {{-- Existing Add/Edit Member Modal --}}
+    @include('member.edit')
 
-    <!-- Account Modal -->
-    <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    {{-- Member Account Modal --}}
+    <div class="modal fade" id="accountModal" tabindex="-1"
+         aria-labelledby="accountModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <form method="POST" id="accountForm" class="w-100">
                 @csrf
+
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="accountModalLabel">Member Account</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div>
+                            <h5 class="modal-title" id="accountModalLabel">
+                                Member Account
+                            </h5>
+                            <p class="text-muted small mb-0 mt-1">
+                                Configure login credentials and account status.
+                            </p>
+                        </div>
+
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+
                     <div class="modal-body">
                         <input type="hidden" id="account_member_id" name="member_id">
 
                         <div class="mb-3">
-                            <label for="account_email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="account_email" name="email" required>
-                            <div id="account_email_error" class="text-danger small pt-1 d-none"></div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="account_password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="account_password" name="password">
-                            <div id="account_password_error" class="text-danger small pt-1 d-none"></div>
-                            <small class="text-muted" id="account_password_help">Leave blank to keep current password.</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="account_password_confirmation" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="account_password_confirmation" name="password_confirmation">
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" value="1" id="account_is_active" name="is_active" checked>
-                            <label class="form-check-label" for="account_is_active">
-                                Active account
+                            <label for="account_email" class="form-label fw-semibold">
+                                Email address
                             </label>
+                            <input type="email" class="form-control"
+                                   id="account_email" name="email" required
+                                   autocomplete="email">
+                            <div id="account_email_error"
+                                 class="text-danger small pt-1 d-none"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="account_password" class="form-label fw-semibold">
+                                Password
+                            </label>
+                            <input type="password" class="form-control"
+                                   id="account_password" name="password"
+                                   autocomplete="new-password">
+                            <div id="account_password_error"
+                                 class="text-danger small pt-1 d-none"></div>
+                            <small class="text-muted">
+                                Leave blank to keep the current password.
+                            </small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="account_password_confirmation"
+                                   class="form-label fw-semibold">
+                                Confirm password
+                            </label>
+                            <input type="password" class="form-control"
+                                   id="account_password_confirmation"
+                                   name="password_confirmation"
+                                   autocomplete="new-password">
+                        </div>
+
+                        <div class="p-3 rounded-3 border bg-light">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox"
+                                       value="1" id="account_is_active"
+                                       name="is_active" checked>
+                                <label class="form-check-label fw-semibold"
+                                       for="account_is_active">
+                                    Active account
+                                </label>
+                                <div class="small text-muted mt-1">
+                                    Enable or disable this member's login access.
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Account</button>
+                        <button type="button" class="btn btn-light border"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fa-solid fa-check me-1"></i>
+                            Save Account
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Table Card -->
-    <div class="card shadow border-1 rounded-4">
-        <div class="card-body">
+    {{-- Members Table --}}
+    <div class="members-card">
+        <div class="members-card-header">
+            <div>
+                <h2 class="members-card-title">Member Directory</h2>
+                <p class="members-card-description">
+                    View and manage registered members.
+                </p>
+            </div>
+
+            <span class="badge rounded-pill text-bg-light border px-3 py-2">
+                <i class="fa-solid fa-list me-1"></i>
+                Member Records
+            </span>
+        </div>
+
+        <div class="members-table-container">
             <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle mb-0" id="myTable">
+                <table class="table table-hover align-middle" id="myTable">
                     <thead>
                         <tr>
-                            <th class="text-muted">Image</th>
-                            <th class="text-muted">Name</th>
-                            <th class="text-muted">Position</th>
-                            <th class="text-muted" style="width: 10%">Action</th>
+                            <th>Photo</th>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th style="width: 150px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -81,8 +464,10 @@
             </div>
         </div>
     </div>
+
 </div>
 @endsection
+
 
 @section('scripts')
 <script>

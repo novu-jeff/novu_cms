@@ -121,8 +121,6 @@ class BarangayOfficialController extends Controller
         // Optional filter by barangay_id
         if ($request->filled('barangay_id')) {
             $query->where('barangay_id', $request->barangay_id);
-        }else{
-            $query->where('barangay_id', 1); // default to barangay_id 1 if not provided
         }
 
         return response()->json([

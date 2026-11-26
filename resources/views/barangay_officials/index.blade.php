@@ -1,58 +1,163 @@
 @extends('layouts.app')
 
+
+
  <!-- Filter Officials by Barangay -->
 
+
+
+@section('styles')
+<style>
+    .barangay-officials-page { --bo-primary: #3157d5; --bo-ink: #172033; --bo-muted: #758096; color: var(--bo-ink); }
+    .barangay-officials-page .page-heading { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.5rem; }
+    .barangay-officials-page .eyebrow { color:var(--bo-primary); font-size:.72rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:.4rem; }
+    .barangay-officials-page .page-title { font-size:clamp(1.45rem,2vw,1.9rem); font-weight:750; letter-spacing:-.035em; margin:0; }
+    .barangay-officials-page .page-subtitle { color:var(--bo-muted); margin:.35rem 0 0; font-size:.93rem; }
+    .barangay-officials-page .btn-add-official { display:inline-flex; align-items:center; justify-content:center; gap:.55rem; padding:.75rem 1.1rem; border:0; border-radius:.8rem; color:#fff; background:var(--bo-primary); font-weight:650; box-shadow:0 7px 18px rgba(49,87,213,.18); transition:transform .18s ease,box-shadow .18s ease; white-space:nowrap; }
+    .barangay-officials-page .btn-add-official:hover { color:#fff; transform:translateY(-1px); box-shadow:0 10px 22px rgba(49,87,213,.25); }
+    .barangay-officials-page .filter-panel,.barangay-officials-page .table-panel { background:#fff; border:1px solid #e8ecf3; border-radius:1rem; box-shadow:0 8px 28px rgba(24,39,75,.045); }
+    .barangay-officials-page .filter-panel { padding:1rem 1.15rem; margin-bottom:1rem; }
+    .barangay-officials-page .filter-label { color:#45516a; font-size:.82rem; font-weight:700; margin-bottom:.45rem; }
+    .barangay-officials-page .form-select { min-height:44px; border-color:#dfe5ef; border-radius:.7rem; box-shadow:none; }
+    .barangay-officials-page .form-select:focus { border-color:#9aafff; box-shadow:0 0 0 .2rem rgba(49,87,213,.1); }
+    .barangay-officials-page .table-panel { overflow:hidden; }
+    .barangay-officials-page .table-panel-header { display:flex; align-items:center; justify-content:space-between; padding:1.1rem 1.25rem; border-bottom:1px solid #edf0f5; }
+    .barangay-officials-page .table-panel-title { font-weight:750; margin:0; font-size:1rem; }
+    .barangay-officials-page .table-panel-subtitle { color:var(--bo-muted); font-size:.82rem; margin:.2rem 0 0; }
+    .barangay-officials-page .table { margin:0; }
+    .barangay-officials-page .table thead th { padding:1rem 1.15rem; background:#f8faff; border-bottom:1px solid #e8ecf3; color:#65718a; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.065em; white-space:nowrap; }
+    .barangay-officials-page .table tbody td { padding:.9rem 1.15rem; border-color:#eef1f6; color:#344057; vertical-align:middle; }
+    .barangay-officials-page .table tbody tr:hover { background:#fafbff; }
+    .barangay-officials-page .dataTables_wrapper { padding:1rem 1.15rem; }
+    .barangay-officials-page .dataTables_wrapper .dataTables_length,.barangay-officials-page .dataTables_wrapper .dataTables_filter,.barangay-officials-page .dataTables_wrapper .dataTables_info { color:var(--bo-muted); font-size:.84rem; margin-bottom:.8rem; }
+    .barangay-officials-page .dataTables_wrapper .dataTables_filter input,.barangay-officials-page .dataTables_wrapper .dataTables_length select { border:1px solid #dfe5ef; border-radius:.6rem; padding:.4rem .65rem; outline:none; }
+    .barangay-officials-page .dataTables_wrapper .dataTables_filter input:focus { border-color:#9aafff; }
+    .barangay-officials-page .dataTables_wrapper .dataTables_paginate .paginate_button { border-radius:.5rem !important; }
+    .barangay-officials-page .dataTables_wrapper .dataTables_paginate .paginate_button.current { background:var(--bo-primary) !important; border-color:var(--bo-primary) !important; color:#fff !important; }
+    .barangay-officials-page .dataTables_processing { border:1px solid #e8ecf3; border-radius:.7rem; background:#fff; box-shadow:0 8px 25px rgba(24,39,75,.08); }
+    /* Fix DataTables dropdown arrow overlap */
+    .barangay-officials-page .dataTables_wrapper .dataTables_length select {
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        background: none !important;
+        background-image: none !important;
+        padding: 0.4rem 0.65rem !important;
+        padding-right: 0.65rem !important;
+    }
+    @media (max-width: 767.98px) { .barangay-officials-page .page-heading { align-items:flex-start; flex-direction:column; } .barangay-officials-page .btn-add-official { width:100%; } .barangay-officials-page .table-panel-header { padding:1rem; } .barangay-officials-page .dataTables_wrapper { padding:.75rem; } .barangay-officials-page .dataTables_wrapper .dataTables_filter { text-align:left; } .barangay-officials-page .dataTables_wrapper .dataTables_filter input { max-width:60%; } }
+</style>
+@endsection
+
 @section('content')
-<div class="container py-5">
+
+<div class="container-fluid py-4 px-3 px-lg-4 barangay-officials-page">
+
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+
+    <div class="page-heading">
+
         <div>
-            <h2 class="fw-semibold text-dark mb-1">Barangay Officials</h2>
-            <p class="text-muted mb-0">Manage barangay members in this module</p>
+
+            <div class="eyebrow">Directory management</div>
+            <h2 class="page-title">Barangay Officials</h2>
+
+            <p class="page-subtitle">Manage officials and their barangay assignments.</p>
+
         </div>
 
-        <button type="button" class="btn btn-secondary p-3 px-5" id="create_button">
+
+
+        <button type="button" class="btn btn-add-official" id="create_button">
+
             <i class="fas fa-plus me-1"></i> Add Official
+
         </button>
+
     </div>
+
+
 
     <!-- Include Modal Form -->
+
     @include('barangay_officials.edit')
 
+
+
     <!-- Barangay Filter -->
-    <div class="mb-3">
-        <label for="filter_barangay" class="form-label">Filter by Barangay</label>
+
+    <div class="filter-panel">
+
+        <label for="filter_barangay" class="form-label filter-label">Filter officials by barangay</label>
+
         <select id="filter_barangay" class="form-select">
+
             <option value="">All Barangays</option>
+
             @foreach($barangays as $barangay)
+
                 <option value="{{ $barangay->id }}">{{ $barangay->name }}</option>
+
             @endforeach
+
         </select>
+
     </div>
 
+
+
     <!-- Table -->
-    <div class="card shadow border-1 rounded-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle mb-0" id="myTable">
-                    <thead>
-                        <tr>
-                            <th class="text-muted">Image</th>
-                            <th class="text-muted">Name</th>
-                            <th class="text-muted">Position</th>
-                            <!--<th class="text-muted">Barangay</th>-->
-                            <th class="text-muted" style="width: 10%">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- AJAX-loaded content -->
-                    </tbody>
-                </table>
+
+    <div class="table-panel">
+
+        <div class="table-panel-header">
+            <div>
+                <h3 class="table-panel-title">Officials directory</h3>
+                <p class="table-panel-subtitle">View, edit, reorder, or deactivate listed officials.</p>
             </div>
         </div>
+
+        <div class="table-responsive">
+
+                <table class="table table-hover table-striped align-middle mb-0" id="myTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="text-muted">Image</th>
+
+                            <th class="text-muted">Name</th>
+
+                            <th class="text-muted">Position</th>
+
+                            <!--<th class="text-muted">Barangay</th>-->
+
+                            <th class="text-muted" style="width: 10%">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <!-- AJAX-loaded content -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
     </div>
+
 </div>
+
 @endsection
+
+
 
 @section('scripts')
 <script>

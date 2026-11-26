@@ -25,7 +25,12 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'member',
                 'display_name' => 'SB Member'
+            ],
+            [
+                'name' => 'presiding_officer',
+                'display_name' => 'Presiding Officer'
             ]
+
         ]);
     }
 }

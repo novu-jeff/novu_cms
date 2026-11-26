@@ -3,132 +3,101 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barangay;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
 class BarangayController extends Controller
 {
-    public function index()
+    public function index(): View|JsonResponse
     {
-        $data = Barangay::where('isActive', true)->get();
+        $query = Barangay::query()->orderBy('name');
 
         if (request()->ajax()) {
-            return $this->datatable($data);
+            return $this->datatable($query);
         }
 
-        return view('barangay.index');
+        return view('barangays.index');
     }
 
-    public function loadData()
-    {
-        $data = Barangay::where('isActive', true)->get();
-        return response(['data' => $data, 'stauts' => 'success'], 200);
-    }
-
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:barangay_officials,name',
-            'position' => 'nullable|string|max:255',
-            'barangay' => 'nullable|string|max:255',
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => ['required', 'string', 'max:255', Rule::unique('barangays', 'name')],
         ]);
 
-        DB::beginTransaction();
+        $barangay = Barangay::create([
+            'name' => trim($validated['name']),
+        ]);
 
-        try {
-            if ($request->hasFile('image_path')) {
-                $imagePath = $request->file('image_path')->store('barangays', 'public');
-                $validated['image_path'] = $imagePath;
-            }
-
-            $data = Barangay::create($validated);
-
-            DB::commit();
-
-            return response(['data' => $data, 'message' => 'Barangay member created successfully.'], 200);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response(['message' => $e->getMessage(), 'status' => 'store failed'], 500);
-        }
+        return response()->json([
+            'data' => $barangay,
+            'message' => 'Barangay added successfully.',
+        ], 201);
     }
 
-    public function edit(string $id)
+    public function edit(string $id): JsonResponse
     {
-        $data = Barangay::where('isActive', true)->findOrFail($id);
-        return response(['data' => $data, 'message' => 'success'], 200);
+        $barangay = Barangay::findOrFail($id);
+
+        return response()->json([
+            'data' => $barangay,
+            'message' => 'Barangay loaded successfully.',
+        ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
-        $record = Barangay::findOrFail($id);
+        $barangay = Barangay::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:barangay_officials,name,' . $record->id,
-            'position' => 'nullable|string|max:255',
-            'barangay' => 'nullable|string|max:255',
-            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('barangays', 'name')->ignore($barangay->id),
+            ],
         ]);
 
-        DB::beginTransaction();
+        $barangay->update([
+            'name' => trim($validated['name']),
+        ]);
 
-        try {
-            if ($request->hasFile('image_path')) {
-                $imagePath = $request->file('image_path')->store('barangays', 'public');
-                $validated['image_path'] = $imagePath;
-            }
-
-            $record->update($validated);
-
-            DB::commit();
-
-            return response(['data' => $record, 'message' => 'Updated successfully.'], 200);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response([
-                'message' => $e->getMessage(),
-                'status' => 'update failed'
-            ], 500);
-        }
+        return response()->json([
+            'data' => $barangay,
+            'message' => 'Barangay updated successfully.',
+        ]);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        $data = Barangay::findOrFail($id);
-        $data->isActive = false;
-        $data->save();
+        $barangay = Barangay::findOrFail($id);
+        $barangay->delete();
 
-        return response([
-            'data' => $data,
-            'message' => 'Deactivated successfully.'
-        ], 200);
+        return response()->json([
+            'message' => 'Barangay deleted successfully.',
+        ]);
     }
 
-    public function datatable($query)
+    protected function datatable($query)
     {
-        return DataTables::of($query)
+        return DataTables::eloquent($query)
             ->addIndexColumn()
-            ->addColumn('image', function ($row) {
-                $url = $row->image_path
-                    ? asset('storage/' . $row->image_path)
-                    : asset('default/profile.png');
+            ->addColumn('officials_count', fn (Barangay $row) => (int) $row->officials_count)
+            ->addColumn('actions', function (Barangay $row) {
+                $id = (int) $row->id;
 
-                return '<img src="' . $url . '" alt="Image" width="50" height="50" style="object-fit: cover; border-radius: 0.25rem;">';
+                return '<div class="d-flex justify-content-center gap-1">'
+                    . '<button type="button" data-id="' . $id . '" class="btn btn-sm btn-outline-primary edit-button" title="Edit barangay" aria-label="Edit barangay">'
+                    . '<i class="fas fa-pen-to-square"></i></button>'
+                    . '<button type="button" data-id="' . $id . '" data-name="' . e($row->name) . '" class="btn btn-sm btn-outline-danger delete-button" title="Deactivate barangay" aria-label="Deactivate barangay">'
+                    . '<i class="fas fa-ban"></i></button>'
+                    . '</div>';
             })
-            ->addColumn('actions', function ($row) {
-                return '<div class="d-flex">
-                    <button data-id="' . $row->id . '" class="btn btn-outline-warning btn-sm ms-1 edit-button" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button data-id="' . $row->id . '" class="btn btn-outline-danger btn-sm ms-1 delete-button" title="Delete">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>';
-            })
-            ->rawColumns(['image', 'actions'])
+            ->rawColumns(['actions'])
             ->make(true);
     }
 }

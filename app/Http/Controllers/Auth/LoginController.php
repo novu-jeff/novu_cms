@@ -25,7 +25,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/members';
+    protected $redirectTo = '/dashboard';
 
 
     protected function redirectTo()
@@ -37,8 +37,17 @@ class LoginController extends Controller
             return route('secretary.documents');
         }
 
+        // Vice Mayor / Presiding Officer dashboard
+        if (
+            $user &&
+            $user->role &&
+            strtolower(trim($user->role->name ?? '')) === 'presiding_officer'
+        ) {
+            return route('presiding-officer.minutes.index');
+        }
+
         // Default dashboard for other users
-        return '/members';
+        return route('dashboard');
     }
 
     /**

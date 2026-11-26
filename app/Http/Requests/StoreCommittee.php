@@ -23,15 +23,36 @@ class StoreCommittee extends FormRequest
     public function rules(): array
     {
         return [
-           'name' => [
+            'name' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('standing_comittee', 'name')->where('isActive', true),
+                Rule::unique('standing_comittee', 'name')
+                    ->where('isActive', true),
             ],
-            'committee' => 'required|array|min:1',
-            'committee.*.name' => 'required|string|max:255',
-            'committee.*.position' => 'nullable|string|max:255',
+
+            'committee' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+
+            'committee.*.member_id' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('members', 'id')
+                    ->where('isActive', true),
+            ],
+
+            'committee.*.position' => [
+                'required',
+                Rule::in([
+                    'Chairperson',
+                    'Vice-Chairperson',
+                    'Member',
+                ]),
+            ],
         ];
     }
 
@@ -43,7 +64,11 @@ class StoreCommittee extends FormRequest
         return [
             'name.required' => 'The committee name is required.',
             'committee.required' => 'At least one member is required.',
-            'committee.*.name.required' => 'Each member must have a name.',
+            'committee.*.member_id.required' => 'Please select an SB member.',
+            'committee.*.member_id.distinct' => 'An SB member cannot be assigned more than once to the same committee.',
+            'committee.*.member_id.exists' => 'The selected SB member is invalid or inactive.',
+            'committee.*.position.required' => 'Please select a committee role.',
+            'committee.*.position.in' => 'The selected committee role is invalid.',
         ];
     }
 }

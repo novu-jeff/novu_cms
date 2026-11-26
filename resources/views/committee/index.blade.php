@@ -1,39 +1,75 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container py-5">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4 px-2">
-        <div>
-            <h2 class="fw-semibold text-dark mb-1">Standing Committee</h2>
-            <p class="text-muted mb-0">Mange standing Committee in this module</p>
-        </div>
+@section('styles')
+<style>
+    .committee-page { max-width: 1800px; margin: 0 auto; padding: 32px; color: #1e293b; }
+    .committee-header { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:28px; }
+    .committee-eyebrow { display:inline-flex; align-items:center; gap:8px; color:#64748b; font-size:12px; font-weight:700; letter-spacing:1.1px; text-transform:uppercase; margin-bottom:8px; }
+    .committee-title { margin:0 0 8px; color:#172338; font-size:clamp(25px,3vw,32px); font-weight:750; letter-spacing:-.7px; line-height:1.2; }
+    .committee-subtitle { margin:0; color:#718096; font-size:14px; line-height:1.6; }
+    .committee-add-btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:46px; padding:0 20px; border:0; border-radius:10px; background:#315efb; color:#fff; font-size:14px; font-weight:600; box-shadow:0 5px 12px rgba(49,94,251,.18); transition:background .2s,transform .2s; }
+    .committee-add-btn:hover { background:#244bd6; color:#fff; transform:translateY(-1px); }
+    .committee-card { overflow:hidden; border:1px solid #e6ebf2; border-radius:16px; background:#fff; box-shadow:0 4px 18px rgba(15,23,42,.035); }
+    .committee-card-header { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:22px 24px; border-bottom:1px solid #edf0f5; }
+    .committee-card-title { margin:0 0 5px; color:#1e293b; font-size:16px; font-weight:700; }
+    .committee-card-description { margin:0; color:#8491a5; font-size:13px; }
+    .committee-table-wrap { padding:8px 24px 20px; }
+    #myTable { width:100% !important; margin-bottom:0 !important; border-collapse:separate; border-spacing:0; }
+    #myTable thead th { padding:16px 14px; background:#f8fafc; color:#64748b; border-bottom:1px solid #e9eef5; font-size:11px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; white-space:nowrap; }
+    #myTable tbody td { padding:16px 14px; border-bottom:1px solid #eef2f7; color:#334155; font-size:13px; vertical-align:middle; }
+    #myTable tbody tr:last-child td { border-bottom:0; }
+    #myTable tbody tr:hover td { background:#f8faff; }
+    .committee-table-wrap .dataTables_wrapper { padding-top:14px; }
+    .committee-table-wrap .dataTables_wrapper .dataTables_length, .committee-table-wrap .dataTables_wrapper .dataTables_filter { margin-bottom:18px; color:#64748b; font-size:13px; }
+    .committee-table-wrap .dataTables_wrapper .dataTables_length select, .committee-table-wrap .dataTables_wrapper .dataTables_filter input { min-height:38px; padding:7px 12px; border:1px solid #dce3ed; border-radius:8px; background:#fff; color:#334155; outline:none; box-shadow:none; }
+    .committee-table-wrap .dataTables_wrapper .dataTables_filter input { min-width:220px; margin-left:8px; }
+    .committee-table-wrap .dataTables_wrapper .dataTables_info { padding-top:18px; color:#8491a5; font-size:12px; }
+    .committee-table-wrap .dataTables_wrapper .dataTables_paginate { padding-top:12px; }
+    .committee-table-wrap .dataTables_wrapper .paginate_button { border-radius:7px !important; font-size:12px; }
+    .committee-table-wrap .dataTables_wrapper .paginate_button.current { border:1px solid #315efb !important; background:#315efb !important; color:#fff !important; }
+    #myModal .modal-content { overflow:hidden; border:1px solid #e6ebf2; border-radius:16px; box-shadow:0 20px 60px rgba(15,23,42,.16); }
+    #myModal .modal-header { padding:20px 24px; border-bottom:1px solid #edf0f5; }
+    #myModal .modal-title { color:#1e293b; font-size:18px; font-weight:700; }
+    #myModal .modal-body { padding:24px; }
+    #myModal .modal-footer { padding:16px 24px; border-top:1px solid #edf0f5; background:#fafbfd; }
+    #myModal .form-control, #myModal .form-select { min-height:42px; border-color:#dce3ed; border-radius:8px; font-size:13px; }
+    #myModal .form-control:focus, #myModal .form-select:focus { border-color:#8da8ff; box-shadow:0 0 0 3px rgba(49,94,251,.09); }
+    @media(max-width:768px) { .committee-page{padding:22px 15px;} .committee-header{align-items:stretch;margin-bottom:22px;} .committee-add-btn{width:100%;} .committee-card-header{padding:18px;} .committee-table-wrap{padding:8px 14px 16px;} .committee-table-wrap .dataTables_wrapper .dataTables_filter,.committee-table-wrap .dataTables_wrapper .dataTables_length{float:none;text-align:left;width:100%;} .committee-table-wrap .dataTables_wrapper .dataTables_filter input{display:block;width:100%;margin:8px 0 0;} #myModal .modal-body{padding:18px;} }
+</style>
+@endsection
 
-        <button type="button" class="btn btn-secondary p-3 px-5" id="create_button">
-            <i class="fas fa-plus me-1"></i> Add Committee
+@section('content')
+<div class="committee-page">
+    <header class="committee-header">
+        <div>
+            <div class="committee-eyebrow"><i class="fa-solid fa-people-group"></i> Administration</div>
+            <h1 class="committee-title">Standing Committee</h1>
+            <p class="committee-subtitle">Manage committee names, members, and assigned positions.</p>
+        </div>
+        <button type="button" class="committee-add-btn" id="create_button">
+            <i class="fa-solid fa-plus"></i><span>Add Committee</span>
         </button>
-    </div>
+    </header>
 
     @include('committee.edit')
 
-    <!-- Table Card -->
-    <div class="card shadow border-1 rounded-4">
-        <div class="card-body">
+    <section class="committee-card">
+        <div class="committee-card-header">
+            <div>
+                <h2 class="committee-card-title">Committee Directory</h2>
+                <p class="committee-card-description">View and manage registered standing committees.</p>
+            </div>
+            <span class="badge rounded-pill text-bg-light border px-3 py-2"><i class="fa-solid fa-list me-1"></i> Committee Records</span>
+        </div>
+        <div class="committee-table-wrap">
             <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle mb-0" id="myTable">
-                    <thead>
-                        <tr>
-                            <th class="text-muted">Name</th>
-                            <th class="text-muted" style="width: 10%">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
+                <table class="table table-hover align-middle" id="myTable">
+                    <thead><tr><th>Name</th><th style="width:150px">Actions</th></tr></thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 @endsection
 
@@ -60,21 +96,50 @@
             const index = $('#members-wrapper .member-entry').length;
 
             const newMember = `
-            <div class="member-entry border rounded p-3 mb-3 position-relative">
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-2 remove-member" aria-label="Close" title="Remove Member"></button>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-2">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="members[${index}][name]" class="form-control" required>
+                <div class="member-entry border rounded p-3 mb-3 position-relative">
+                    <button type="button"
+                            class="btn-close position-absolute top-0 end-0 m-2 remove-member"
+                            aria-label="Close"
+                            title="Remove Member"></button>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label">SB Member</label>
+
+                                <select name="members[${index}][member_id]"
+                                        class="form-select member-select"
+                                        required>
+                                    <option value="">Select SB Member</option>
+                                    @foreach(\App\Models\Member::where('isActive', true)->orderBy('name')->get() as $member)
+                                        <option value="{{ $member->id }}">
+                                            {{ $member->name }} — {{ $member->position }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <div class="field-error text-danger small pt-1 d-none"></div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="form-label">Position</label>
-                            <input type="text" name="members[${index}][position]" class="form-control">
+
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label">Committee Role</label>
+
+                                <select name="members[${index}][position]"
+                                        class="form-select"
+                                        required>
+                                    <option value="">Select Role</option>
+                                    <option value="Chairperson">Chairperson</option>
+                                    <option value="Vice-Chairperson">Vice-Chairperson</option>
+                                    <option value="Member">Member</option>
+                                </select>
+
+                                <div class="field-error text-danger small pt-1 d-none"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
 
             $('#members-wrapper').append(newMember);
         });
@@ -103,7 +168,7 @@
             $('.submit-button').show();
             $('.modal-title').html('Add New Committee');
             $('#myForm')[0].reset();
-
+            $('#members-wrapper .member-entry').not(':first').remove();
             $('.text-danger').addClass('d-none');
             $('.form-control').removeClass('is-invalid');
 
@@ -121,12 +186,12 @@
                 committee: []
             };
 
-            // Loop through all member entries
+            // Gather committee members
             $('#members-wrapper .member-entry').each((index, el) => {
-                const name = $(el).find('[name$="[name]"]').val();
+                const member_id = $(el).find('[name$="[member_id]"]').val();
                 const position = $(el).find('[name$="[position]"]').val();
 
-                payload.committee.push({ name, position });
+                payload.committee.push({ member_id, position });
             });
 
             axios.post(`${basePath}/standing-committee`, payload, {
@@ -215,24 +280,66 @@
                     // Clear all but the first member
                     $('#members-wrapper').empty();
 
+                    // Sort members by committee role
+                    const roleOrder = {
+                        'Chairperson': 1,
+                        'Vice-Chairperson': 2,
+                        'Member': 3,
+                        'Members': 3
+                    };
+
+                    const sortedMembers = [...committee.members].sort((a, b) => {
+                        return (roleOrder[a.position] ?? 99) - (roleOrder[b.position] ?? 99);
+                    });
+
                     // Loop through members
-                    committee.members.forEach((member, index) => {
+                    sortedMembers.forEach((member, index) => {
                         const memberHtml = `
-                        <div class="member-entry border rounded p-3 mb-3 position-relative">
-                            <button type="button" class="btn-close position-absolute top-0 end-0 m-2 remove-member" aria-label="Close" title="Remove Member"></button>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="mb-2">
-                                        <label class="form-label">Name</label>
-                                        <input type="text" name="members[${index}][name]" class="form-control" value="${member.name}" required>
+                            <div class="member-entry border rounded p-3 mb-3 position-relative">
+                                <button type="button"
+                                        class="btn-close position-absolute top-0 end-0 m-2 remove-member"
+                                        aria-label="Close"
+                                        title="Remove Member"></button>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label class="form-label">SB Member</label>
+
+                                            <select name="members[${index}][member_id]"
+                                                    class="form-select member-select"
+                                                    required>
+                                                <option value="">Select SB Member</option>
+                                                @foreach(\App\Models\Member::where('isActive', true)->orderBy('name')->get() as $member)
+                                                    <option value="{{ $member->id }}"
+                                                        ${String(member.member_id) === '{{ $member->id }}' ? 'selected' : ''}>
+                                                        {{ $member->name }} — {{ $member->position }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+
+                                            <div class="field-error text-danger small pt-1 d-none"></div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="form-label">Position</label>
-                                        <input type="text" name="members[${index}][position]" class="form-control" value="${member.position ?? ''}">
+
+                                    <div class="col-md-6">
+                                        <div class="mb-2">
+                                            <label class="form-label">Committee Role</label>
+
+                                            <select name="members[${index}][position]"
+                                                    class="form-select"
+                                                    required>
+                                                <option value="">Select Role</option>
+                                                <option value="Chairperson" ${member.position === 'Chairperson' ? 'selected' : ''}>Chairperson</option>
+                                                <option value="Vice-Chairperson" ${member.position === 'Vice-Chairperson' ? 'selected' : ''}>Vice-Chairperson</option>
+                                                <option value="Member" ${['Member', 'Members'].includes(member.position) ? 'selected' : ''}>Member</option>
+                                            </select>
+
+                                            <div class="field-error text-danger small pt-1 d-none"></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>`;
+                            </div>`;
                         $('#members-wrapper').append(memberHtml);
                     });
 
@@ -260,10 +367,10 @@
 
             // Gather committee members
             $('#members-wrapper .member-entry').each((index, el) => {
-                const name = $(el).find('[name$="[name]"]').val();
+                const member_id = $(el).find('[name$="[member_id]"]').val();
                 const position = $(el).find('[name$="[position]"]').val();
 
-                payload.committee.push({ name, position });
+                payload.committee.push({ member_id, position });
             });
 
             axios.put(`${basePath}/standing-committee/${id}`, payload, {

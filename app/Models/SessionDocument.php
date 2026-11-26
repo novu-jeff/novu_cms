@@ -11,7 +11,8 @@ class SessionDocument extends Model
     protected $fillable = [
         'session_id',
         'document_id',
-        'agenda_order'
+        'agenda_order',
+        'status',
     ];
 
      public function document()
@@ -23,6 +24,11 @@ class SessionDocument extends Model
     {
         return $this->belongsTo(SessionMeeting::class);
     }
+
+    public function actions()
+{
+    return $this->hasMany(SessionAgendaAction::class, 'session_document_id');
+}
 
    
 }

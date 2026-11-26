@@ -13,7 +13,7 @@ class AddCorsHeaders
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $origin = config('app.cors_allowed_origin', 'https://lis-jones.novulutions.com');
+        $origin = config('app.cors_allowed_origin', 'https://lis-staging-app.novulutions.com');
 
         if ($request->isMethod('OPTIONS')) {
             return response('', 204)

@@ -17,27 +17,51 @@
           </div>
 
           {{-- Members Section --}}
-          <div id="members-wrapper">
-            <h6 class="mb-3">Committee Members</h6>
+          {{-- Members Section --}}
+      <div id="members-wrapper">
+          <h6 class="mb-3">Committee Members</h6>
 
-            <div class="member-entry border rounded p-3 mb-3 position-relative">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="mb-2">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="members[0][name]" class="form-control" required>
-                            <div class="field-error text-danger small pt-1 d-none"></div>
-                        </div>
-                        <div>
-                            <label class="form-label">Position</label>
-                            <input type="text" name="members[0][position]" class="form-control">
-                            <div class="field-error text-danger small pt-1 d-none"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <div class="member-entry border rounded p-3 mb-3 position-relative">
+              <div class="row">
+                  <div class="col-md-6">
+                      <div class="mb-2">
+                          <label class="form-label">SB Member</label>
 
+                          <select name="members[0][member_id]"
+                                  class="form-select member-select"
+                                  required>
+                              <option value="">Select SB Member</option>
+
+                              @foreach(\App\Models\Member::where('isActive', true)->orderBy('name')->get() as $member)
+                                  <option value="{{ $member->id }}">
+                                      {{ $member->name }} — {{ $member->position }}
+                                  </option>
+                              @endforeach
+                          </select>
+
+                          <div class="field-error text-danger small pt-1 d-none"></div>
+                      </div>
+                  </div>
+
+                  <div class="col-md-6">
+                      <div class="mb-2">
+                          <label class="form-label">Committee Role</label>
+
+                          <select name="members[0][position]"
+                                  class="form-select"
+                                  required>
+                              <option value="">Select Role</option>
+                              <option value="Chairperson">Chairperson</option>
+                              <option value="Vice-Chairperson">Vice-Chairperson</option>
+                              <option value="Member">Member</option>
+                          </select>
+
+                          <div class="field-error text-danger small pt-1 d-none"></div>
+                      </div>
+                  </div>
+              </div>
           </div>
+      </div>
 
           <button type="button" class="btn btn-sm btn-secondary" id="addMemberBtn">
             <i class="fas fa-plus"></i> Add Member

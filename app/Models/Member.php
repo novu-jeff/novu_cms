@@ -36,4 +36,19 @@ class Member extends Model
         {
             return $this->hasOne(MembersAccount::class, 'member_id');
         }
+
+
+        public function user()
+        {
+            return $this->hasOne(User::class, 'member_id');
+        }
+
+
+        public function committeeAssignments()
+        {
+            return $this->hasMany(
+                CommitteeMember::class,
+                'member_id'
+            );
+        }
 }

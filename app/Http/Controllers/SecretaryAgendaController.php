@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SessionDocument;
 use App\Models\SessionMeeting;
+use App\Models\CommitteeReportAgendaItem;
 use Barryvdh\DomPDF\Facade\Pdf;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Facades\Http;
@@ -23,8 +24,13 @@ class SecretaryAgendaController extends Controller
             ->with('document.member')
             ->orderBy('agenda_order')
             ->get();
+        
+        $committeeReports = CommitteeReportAgendaItem::where('session_id', $id)
+            ->with('referral.committee')
+            ->orderBy('agenda_order')
+            ->get();
 
-        return view('secretary.sessions.agenda', compact('session','documents','id'));
+        return view('secretary.sessions.agenda', compact('session','documents','committeeReports','id'));
     }
 
     public function reorder(Request $request)

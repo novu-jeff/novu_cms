@@ -17,6 +17,8 @@ class MemberController extends Controller
      */
     public function index()
     {
+
+ 
         if (request()->ajax()) {
             $query = Member::with('account')->orderBy('sort_order', 'asc');
             return $this->datatable($query);
@@ -43,9 +45,10 @@ class MemberController extends Controller
         ->orderBy('sort_order', 'asc') // ✅ Sort members by sort_order ascending
         ->get();
 
+
         return response([
             'data' => $data,
-            'status' => 'success'
+            'status' => 'successss'
         ], 200);
     }
 

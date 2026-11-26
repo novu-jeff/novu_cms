@@ -11,6 +11,9 @@ class SessionMinute extends Model
         'document_id',
         'discussion',
         'motion',
-        'decision'
+        'motion_moved_by',
+        'motion_seconded_by',
+        'official_reference',
+        'decision',
     ];
 }

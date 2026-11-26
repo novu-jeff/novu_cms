@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,33 +10,19 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'role_id',
+        'member_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -46,13 +31,41 @@ class User extends Authenticatable
         ];
     }
 
-     public function role()
+    public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
     public function member()
     {
-        return $this->hasOne(Member::class);
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+
+    public function hasRole(string $role): bool
+    {
+        $roleId = config("document_signing.roles.{$role}");
+
+        return $roleId !== null
+            && (int) $this->role_id === (int) $roleId;
+    }
+
+    public function isAdministrator(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
+    public function isSecretary(): bool
+    {
+        return $this->hasRole('secretary');
+    }
+
+    public function isPresidingOfficer(): bool
+    {
+        return $this->hasRole('presiding_officer');
+    }
+
+    public function isCouncilMember(): bool
+    {
+        return $this->hasRole('member');
     }
 }
