@@ -4,11 +4,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MemberAuthController;
 use App\Http\Controllers\SessionVotingController;
 use App\Http\Controllers\Api\OrganizationSettingsApiController;
+use App\Http\Controllers\Api\LisNotificationController;
 
 // Organization Settings API
 Route::get(
     '/organization-settings',
     [OrganizationSettingsApiController::class, 'show']
+);
+
+Route::post(
+    '/internal/lis/document-submitted',
+    [LisNotificationController::class, 'documentSubmitted']
 );
 
 Route::post('/member/login', [

@@ -30,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return '/committee-portal/login';
             }
 
-            return '/login';
+            return route('login');
         });
 
         $middleware->alias([

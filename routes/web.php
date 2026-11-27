@@ -33,6 +33,7 @@ use App\Http\Controllers\CommitteeMeetingController;
 use App\Http\Controllers\CommitteePortal\LiveCommitteeSessionController;
 use App\Http\Controllers\DocumentSigningController;
 use App\Http\Controllers\PresidingOfficer\LiveDeliberationController;
+use App\Http\Controllers\SecretaryNotificationController;
 
 
 
@@ -246,6 +247,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [SecretaryDocumentController::class, 'dashboard'])
         ->middleware(['auth', 'role.check:secretary'])
     ->name('secretary.dashboard');
+
+        Route::get('/notifications', [
+        SecretaryNotificationController::class,
+        'index'
+        ])->middleware(['auth', 'role.check:secretary'])
+        ->name('secretary.notifications.index');
+
+        Route::post('/notifications/{id}/read', [
+            SecretaryNotificationController::class,
+            'markAsRead'
+        ])->middleware(['auth', 'role.check:secretary'])
+        ->name('secretary.notifications.read');
 
         Route::get('/documents', 
             [SecretaryDocumentController::class,'index']
